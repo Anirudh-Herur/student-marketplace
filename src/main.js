@@ -12,6 +12,15 @@ const listingPhoto = document.getElementById("listing-photo");
 const photoPrompt = document.getElementById("photo-prompt");
 const photoPreview = document.getElementById("photo-preview");
 const toastMessage = document.getElementById("toast-message");
+const inrFormatter = new Intl.NumberFormat("en-IN", {
+  style: "currency",
+  currency: "INR",
+  maximumFractionDigits: 0,
+});
+
+function formatINR(amount) {
+  return inrFormatter.format(Number(amount));
+}
 
 let activeCategory = "All items";
 let savedOnly = false;
@@ -138,8 +147,8 @@ function openDetails(card) {
   document.getElementById("detail-category").textContent = details.category;
   document.getElementById("detail-posted").textContent = details.posted || card.querySelector(".listing-category").lastChild.textContent.trim();
   document.getElementById("detail-title").textContent = details.title;
-  document.getElementById("detail-price").textContent = `$${details.price}`;
-  document.getElementById("detail-original").textContent = details.originalPrice ? `$${details.originalPrice} new` : "";
+  document.getElementById("detail-price").textContent = formatINR(details.price);
+  document.getElementById("detail-original").textContent = details.originalPrice ? `${formatINR(details.originalPrice)} new` : "";
   document.getElementById("detail-condition").textContent = `${details.condition} condition`;
   document.getElementById("detail-description").textContent = details.description;
   document.getElementById("detail-initials").textContent = details.initials;
@@ -163,7 +172,7 @@ function createListingCard(listing) {
   const campus = escapeHTML(listing.campus);
   const description = escapeHTML(listing.description);
   const image = escapeHTML(listing.image);
-  const originalPrice = listing.originalPrice ? `<del>$${Number(listing.originalPrice)}</del>` : "";
+  const originalPrice = listing.originalPrice ? `<del>${formatINR(listing.originalPrice)}</del>` : "";
   const accent = ["mint", "lavender", "peach", "sky", "yellow", "pink"].includes(listing.accent)
     ? listing.accent
     : "mint";
@@ -186,7 +195,7 @@ function createListingCard(listing) {
       <div class="listing-body">
         <div class="listing-category">${category}<span>·</span>Just now</div>
         <button class="listing-title" type="button" data-open-details>${title}</button>
-        <div class="price-row"><strong>$${Number(listing.price)}</strong>${originalPrice}</div>
+        <div class="price-row"><strong>${formatINR(listing.price)}</strong>${originalPrice}</div>
         <div class="seller-row"><span class="seller-avatar">${initials}</span><span class="seller-name">${seller}</span><span class="seller-campus">${campus}</span></div>
       </div>
     </article>`;
