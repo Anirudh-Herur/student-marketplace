@@ -1,6 +1,6 @@
 # Campus Cart
 
-A responsive, front-end-only student marketplace made with HTML, CSS, JavaScript, React, and Bootstrap. Open `index.html` in a browser to use it; React and Bootstrap are loaded from their public CDNs.
+A responsive, front-end-only student marketplace made with HTML, CSS, vanilla JavaScript, and Bootstrap. Open `index.html` in a browser or serve the folder with a static web server; Bootstrap is loaded from its public CDN.
 
 Students can browse sample listings, search and filter by category, save favorites, contact sellers through their email app, and post a listing with an optional image.
 

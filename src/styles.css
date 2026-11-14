@@ -12,6 +12,7 @@
   --line: #e8e9e2;
 }
 
+[hidden] { display: none !important; }
 * { box-sizing: border-box; }
 html { scroll-behavior: smooth; scroll-padding-top: 85px; }
 body { margin: 0; min-width: 320px; background: var(--cream); font-family: "DM Sans", sans-serif; color: var(--ink); }
