@@ -29,11 +29,11 @@ function refresh() {
   $("#empty-description").textContent = savedOnly
     ? "Tap the heart on anything you love and it’ll show up here."
     : "Try another search or category. Your next great find is out there.";
-  $("#listings-kicker").textContent = savedOnly ? "Your little collection" : "Fresh from around campus";
-  $("#listings-title").textContent = savedOnly ? "Your saved finds" : "Recently listed";
+  $("#listings-kicker").textContent = savedOnly ? "Your little collection" : "Course essentials";
+  $("#listings-title").textContent = savedOnly ? "Your saved finds" : "Course essentials";
   $("#listings-subtitle").textContent = savedOnly
     ? "All the things you’ve had your eye on."
-    : "One student’s done-with-it is another’s just-what-I-needed.";
+    : "Affordable books, kits and study tools for your RV University subjects.";
   $("#saved-count").textContent = saved.size;
   $("#saved-count").hidden = saved.size === 0;
   $("#saved-toggle").classList.toggle("active", savedOnly);
