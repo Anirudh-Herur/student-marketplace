@@ -1,208 +1,375 @@
-const $ = (selector, root = document) => root.querySelector(selector);
-const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
-const grid = $("#listing-grid");
-const form = $("#sell-form");
-const saved = new Set();
-let category = "All items";
-let savedOnly = false;
-let photo = "";
-let sequence = 0;
+// Small helpers keep the page code easier to read.
+const $ = (selector, parent = document) => parent.querySelector(selector);
+const $$ = (selector, parent = document) => [
+  ...parent.querySelectorAll(selector),
+];
 
-const money = (value) => new Intl.NumberFormat("en-IN", {
-  style: "currency", currency: "INR", maximumFractionDigits: 0,
-}).format(Number(value));
+const listingGrid = $("#listing-grid");
+const sellForm = $("#sell-form");
 
-function refresh() {
-  const query = $("#market-search").value.trim().toLowerCase();
-  let visible = 0;
-  $$(".listing-card", grid).forEach((card) => {
-    const text = `${card.dataset.title} ${card.dataset.category} ${card.dataset.condition} ${card.dataset.seller} ${card.dataset.campus}`.toLowerCase();
-    const show = (category === "All items" || card.dataset.category === category)
-      && (!query || text.includes(query))
-      && (!savedOnly || saved.has(card.dataset.title));
-    card.parentElement.hidden = !show;
-    visible += Number(show);
+// These values describe the current page view. They are not saved to a server.
+const savedListings = new Set();
+let selectedCategory = "All items";
+let showSavedOnly = false;
+let uploadedPhoto = "";
+let newListingOrder = 0;
+
+// Change the currency here if the marketplace uses a different one.
+function formatPrice(price) {
+  return new Intl.NumberFormat("en-IN", {
+    style: "currency",
+    currency: "INR",
+    maximumFractionDigits: 0,
+  }).format(Number(price));
+}
+
+// Show only listings that match the search, category, and saved-items filters.
+function updateListings() {
+  const searchText = $("#market-search").value.trim().toLowerCase();
+  let visibleCount = 0;
+
+  $$(".listing-card", listingGrid).forEach((card) => {
+    const listingText = [
+      card.dataset.title,
+      card.dataset.category,
+      card.dataset.condition,
+      card.dataset.seller,
+      card.dataset.campus,
+    ]
+      .join(" ")
+      .toLowerCase();
+
+    const matchesCategory =
+      selectedCategory === "All items" ||
+      card.dataset.category === selectedCategory;
+    const matchesSearch = listingText.includes(searchText);
+    const isSaved = savedListings.has(card.dataset.title);
+    const shouldShow =
+      matchesCategory && matchesSearch && (!showSavedOnly || isSaved);
+
+    card.parentElement.hidden = !shouldShow;
+
+    if (shouldShow) {
+      visibleCount += 1;
+    }
   });
-  $("#empty-state").hidden = visible > 0;
-  $("#empty-icon").textContent = savedOnly ? "♡" : "⌕";
-  $("#empty-title").textContent = savedOnly ? "Your saved list is waiting" : "No finds just yet";
-  $("#empty-description").textContent = savedOnly
+
+  // Update the empty message when no listings match the current filters.
+  $("#empty-state").hidden = visibleCount > 0;
+  $("#empty-icon").textContent = showSavedOnly ? "♡" : "⌕";
+  $("#empty-title").textContent = showSavedOnly
+    ? "Your saved list is waiting"
+    : "No finds just yet";
+  $("#empty-description").textContent = showSavedOnly
     ? "Tap the heart on anything you love and it’ll show up here."
     : "Try another search or category. Your next great find is out there.";
-  $("#listings-kicker").textContent = savedOnly ? "Your little collection" : "Course essentials";
-  $("#listings-title").textContent = savedOnly ? "Your saved finds" : "Course essentials";
-  $("#listings-subtitle").textContent = savedOnly
+
+  // Keep the listings heading and saved-items button in sync with the filters.
+  $("#listings-kicker").textContent = showSavedOnly
+    ? "Your little collection"
+    : "Course essentials";
+  $("#listings-title").textContent = showSavedOnly
+    ? "Your saved finds"
+    : "Course essentials";
+  $("#listings-subtitle").textContent = showSavedOnly
     ? "All the things you’ve had your eye on."
     : "Affordable books, kits and study tools for your RV University subjects.";
-  $("#saved-count").textContent = saved.size;
-  $("#saved-count").hidden = saved.size === 0;
-  $("#saved-toggle").classList.toggle("active", savedOnly);
-  $("#saved-toggle").setAttribute("aria-pressed", String(savedOnly));
+  $("#saved-count").textContent = savedListings.size;
+  $("#saved-count").hidden = savedListings.size === 0;
+  $("#saved-toggle").classList.toggle("active", showSavedOnly);
+  $("#saved-toggle").setAttribute("aria-pressed", String(showSavedOnly));
+
+  // Highlight the currently selected category buttons.
   $$("[data-category]").forEach((button) => {
-    const active = button.dataset.category === category;
-    button.classList.toggle("active", active);
-    button.classList.toggle("selected", active);
-    button.setAttribute("aria-pressed", String(active));
+    const isSelected = button.dataset.category === selectedCategory;
+    button.classList.toggle("active", isSelected);
+    button.classList.toggle("selected", isSelected);
+    button.setAttribute("aria-pressed", String(isSelected));
   });
 }
 
+// Sort listings by their data-price or data-date values in index.html.
 function sortListings() {
-  const direction = $("#sort-listings").value;
-  $$(".listing-card", grid)
-    .sort((a, b) => direction === "low"
-      ? Number(a.dataset.price) - Number(b.dataset.price)
-      : direction === "high"
-        ? Number(b.dataset.price) - Number(a.dataset.price)
-        : Number(a.dataset.date) - Number(b.dataset.date))
-    .forEach((card) => grid.append(card.parentElement));
-  refresh();
+  const sortOrder = $("#sort-listings").value;
+  const cards = $$(".listing-card", listingGrid);
+
+  cards.sort((first, second) => {
+    if (sortOrder === "low") {
+      return Number(first.dataset.price) - Number(second.dataset.price);
+    }
+
+    if (sortOrder === "high") {
+      return Number(second.dataset.price) - Number(first.dataset.price);
+    }
+
+    return Number(first.dataset.date) - Number(second.dataset.date);
+  });
+
+  cards.forEach((card) => listingGrid.append(card.parentElement));
+  updateListings();
 }
 
-function showModal(modal, show) {
-  modal.hidden = !show;
-  if (show) $("button, input, select, textarea, a[href]", modal)?.focus();
+// Open or close either of the page's dialogs.
+function setModalOpen(modal, isOpen) {
+  modal.hidden = !isOpen;
+
+  if (isOpen) {
+    const firstControl = $("button, input, select, textarea, a[href]", modal);
+
+    if (firstControl) {
+      firstControl.focus();
+    }
+  }
 }
 
-function showDetails(card) {
-  const data = card.dataset;
-  const fields = {
-    "detail-category": data.category,
-    "detail-posted": data.posted || $(".listing-category", card).lastChild.textContent.trim(),
-    "detail-title": data.title,
-    "detail-price": money(data.price),
-    "detail-original": data.originalPrice ? `${money(data.originalPrice)} new` : "",
-    "detail-condition": `${data.condition} condition`,
-    "detail-description": data.description,
-    "detail-initials": data.initials,
-    "detail-seller": data.seller,
-    "detail-campus": data.campus,
+// Fill the details dialog using the selected listing's data attributes.
+function showListingDetails(card) {
+  const listing = card.dataset;
+  const details = {
+    "detail-category": listing.category,
+    "detail-posted":
+      listing.posted ||
+      $(".listing-category", card).lastChild.textContent.trim(),
+    "detail-title": listing.title,
+    "detail-price": formatPrice(listing.price),
+    "detail-original": listing.originalPrice
+      ? `${formatPrice(listing.originalPrice)} new`
+      : "",
+    "detail-condition": `${listing.condition} condition`,
+    "detail-description": listing.description,
+    "detail-initials": listing.initials,
+    "detail-seller": listing.seller,
+    "detail-campus": listing.campus,
   };
-  Object.entries(fields).forEach(([id, value]) => { $(`#${id}`).textContent = value; });
-  $("#detail-photo").src = data.image;
-  $("#detail-photo").alt = data.title;
-  const accent = $(".listing-image", card).classList[1] || "mint";
-  $("#detail-image").className = `detail-image ${accent}`;
-  const message = `Hi ${data.seller}, I saw your listing for ${data.title} on Campus Cart. Is it still available?`;
-  $("#contact-seller").href = `mailto:?subject=${encodeURIComponent(`Hi, I'm interested in ${data.title}`)}&body=${encodeURIComponent(message)}`;
-  showModal($("#details-modal"), true);
+
+  Object.entries(details).forEach(([elementId, value]) => {
+    $(`#${elementId}`).textContent = value;
+  });
+
+  $("#detail-photo").src = listing.image;
+  $("#detail-photo").alt = listing.title;
+
+  const imageColor = $(".listing-image", card).classList[1] || "mint";
+  $("#detail-image").className = `detail-image ${imageColor}`;
+
+  // This link opens an email app; it does not send a message automatically.
+  const message =
+    `Hi ${listing.seller}, I saw your listing for ${listing.title} ` +
+    "on Campus Cart. Is it still available?";
+  const subject = `Hi, I'm interested in ${listing.title}`;
+  $("#contact-seller").href =
+    `mailto:?subject=${encodeURIComponent(subject)}` +
+    `&body=${encodeURIComponent(message)}`;
+
+  setModalOpen($("#details-modal"), true);
 }
 
-function addListing(data) {
-  const card = $("#listing-template").content.firstElementChild.cloneNode(true);
-  const item = card.querySelector(".listing-card");
-  Object.entries(data).forEach(([key, value]) => { item.dataset[key] = value; });
-  $("[data-image]", item).classList.add(data.accent);
-  $("[data-photo]", item).src = data.image;
-  $("[data-condition]", item).textContent = data.condition;
-  $("[data-view]", item).setAttribute("aria-label", `View ${data.title}`);
-  $("[data-save]", item).setAttribute("aria-label", `Save ${data.title}`);
-  $(".listing-category", item).innerHTML = `${data.category}<span>·</span>Just now`;
-  $(".listing-title", item).textContent = data.title;
-  $(".price-row strong", item).textContent = money(data.price);
-  $(".price-row del", item).textContent = data.originalPrice ? money(data.originalPrice) : "";
-  $(".seller-avatar", item).textContent = data.initials;
-  $(".seller-name", item).textContent = data.seller;
-  $(".seller-campus", item).textContent = data.campus;
-  grid.prepend(card);
+// Add a new listing by copying the HTML template in index.html.
+function addListing(listing) {
+  const listingElement =
+    $("#listing-template").content.firstElementChild.cloneNode(true);
+  const card = $(".listing-card", listingElement);
+
+  // Store listing details on the card so search and details can read them.
+  Object.entries(listing).forEach(([name, value]) => {
+    card.dataset[name] = value;
+  });
+
+  $("[data-image]", card).classList.add(listing.accent);
+  $("[data-photo]", card).src = listing.image;
+  $("[data-condition]", card).textContent = listing.condition;
+  $("[data-view]", card).setAttribute("aria-label", `View ${listing.title}`);
+  $("[data-save]", card).setAttribute("aria-label", `Save ${listing.title}`);
+  $(".listing-category", card).innerHTML =
+    `${listing.category}<span>·</span>Just now`;
+  $(".listing-title", card).textContent = listing.title;
+  $(".price-row strong", card).textContent = formatPrice(listing.price);
+  $(".price-row del", card).textContent = listing.originalPrice
+    ? formatPrice(listing.originalPrice)
+    : "";
+  $(".seller-avatar", card).textContent = listing.initials;
+  $(".seller-name", card).textContent = listing.seller;
+  $(".seller-campus", card).textContent = listing.campus;
+
+  listingGrid.prepend(listingElement);
 }
 
+// One click listener handles filters, saved items, and dialog buttons.
 document.addEventListener("click", (event) => {
   const button = event.target.closest("button");
-  if (!button) return;
+
+  if (!button) {
+    return;
+  }
 
   if (button.dataset.category) {
-    category = button.dataset.category;
-    savedOnly = false;
-    refresh();
+    selectedCategory = button.dataset.category;
+    showSavedOnly = false;
+    updateListings();
     $("#listings").scrollIntoView({ behavior: "smooth" });
-  } else if (button.matches("[data-save]")) {
+    return;
+  }
+
+  if (button.matches("[data-save]")) {
     const title = button.closest(".listing-card").dataset.title;
-    saved.has(title) ? saved.delete(title) : saved.add(title);
-    button.classList.toggle("saved", saved.has(title));
-    button.setAttribute("aria-pressed", String(saved.has(title)));
-    button.setAttribute("aria-label", `${saved.has(title) ? "Remove" : "Save"} ${title}`);
-    refresh();
-  } else if (button.matches("[data-open-details]")) {
-    showDetails(button.closest(".listing-card"));
-  } else if (button.matches("[data-open-sell]")) {
-    showModal($("#sell-modal"), true);
-  } else if (button.matches("[data-close-modal]")) {
-    showModal(button.closest(".modal-backdrop-custom"), false);
-  } else if (button.id === "saved-toggle") {
-    savedOnly = !savedOnly;
-    refresh();
+
+    if (savedListings.has(title)) {
+      savedListings.delete(title);
+    } else {
+      savedListings.add(title);
+    }
+
+    const isSaved = savedListings.has(title);
+    button.classList.toggle("saved", isSaved);
+    button.setAttribute("aria-pressed", String(isSaved));
+    button.setAttribute(
+      "aria-label",
+      `${isSaved ? "Remove" : "Save"} ${title}`,
+    );
+    updateListings();
+    return;
+  }
+
+  if (button.matches("[data-open-details]")) {
+    showListingDetails(button.closest(".listing-card"));
+    return;
+  }
+
+  if (button.matches("[data-open-sell]")) {
+    setModalOpen($("#sell-modal"), true);
+    return;
+  }
+
+  if (button.matches("[data-close-modal]")) {
+    setModalOpen(button.closest(".modal-backdrop-custom"), false);
+    return;
+  }
+
+  if (button.id === "saved-toggle") {
+    showSavedOnly = !showSavedOnly;
+    updateListings();
     $("#listings").scrollIntoView({ behavior: "smooth" });
-  } else if (button.id === "reset-filters") {
+    return;
+  }
+
+  if (button.id === "reset-filters") {
     $("#market-search").value = "";
-    category = "All items";
-    savedOnly = false;
-    refresh();
+    selectedCategory = "All items";
+    showSavedOnly = false;
+    updateListings();
   }
 });
 
+// Clicking outside a dialog or pressing Escape closes it.
 $$(".modal-backdrop-custom").forEach((modal) => {
   modal.addEventListener("click", (event) => {
-    if (event.target === modal) showModal(modal, false);
+    if (event.target === modal) {
+      setModalOpen(modal, false);
+    }
   });
 });
+
 document.addEventListener("keydown", (event) => {
-  if (event.key === "Escape") $$(".modal-backdrop-custom").forEach((modal) => showModal(modal, false));
+  if (event.key === "Escape") {
+    $$(".modal-backdrop-custom").forEach((modal) => {
+      setModalOpen(modal, false);
+    });
+  }
 });
-$("#market-search").addEventListener("input", refresh);
+
+// Search updates as the user types. Submitting the form scrolls to the results.
+$("#market-search").addEventListener("input", updateListings);
 $("#search-form").addEventListener("submit", (event) => {
   event.preventDefault();
   $("#listings").scrollIntoView({ behavior: "smooth" });
 });
 $("#sort-listings").addEventListener("change", sortListings);
-$("#contact-seller").addEventListener("click", () => showModal($("#details-modal"), false));
+$("#contact-seller").addEventListener("click", () => {
+  setModalOpen($("#details-modal"), false);
+});
 
-$("#photo-prompt").addEventListener("click", () => $("#listing-photo").click());
-$("#photo-preview").addEventListener("click", () => $("#listing-photo").click());
+// Let the user choose a photo, then show a preview in the listing form.
+$("#photo-prompt").addEventListener("click", () => {
+  $("#listing-photo").click();
+});
+$("#photo-preview").addEventListener("click", () => {
+  $("#listing-photo").click();
+});
 $("#listing-photo").addEventListener("change", (event) => {
   const file = event.target.files[0];
-  if (!file?.type.startsWith("image/")) return;
+
+  if (!file || !file.type.startsWith("image/")) {
+    return;
+  }
+
   const reader = new FileReader();
+
   reader.onload = () => {
-    photo = reader.result;
-    $("#photo-preview").innerHTML = `<img src="${photo}" alt="Listing photo preview"><span>Change photo</span>`;
+    uploadedPhoto = reader.result;
+    $("#photo-preview").innerHTML =
+      `<img src="${uploadedPhoto}" alt="Listing photo preview">` +
+      "<span>Change photo</span>";
     $("#photo-prompt").hidden = true;
     $("#photo-preview").hidden = false;
   };
+
   reader.readAsDataURL(file);
 });
 
-form.addEventListener("submit", (event) => {
+// Check the form and add its listing to this page only.
+sellForm.addEventListener("submit", (event) => {
   event.preventDefault();
-  if (!form.reportValidity()) return;
-  const values = new FormData(form);
-  const seller = values.get("seller").trim();
+
+  if (!sellForm.reportValidity()) {
+    return;
+  }
+
+  const formValues = new FormData(sellForm);
+  const sellerName = formValues.get("seller").trim();
+  const sellerInitials = sellerName
+    .split(/\s+/)
+    .map((part) => part[0])
+    .join("")
+    .slice(0, 2)
+    .toUpperCase();
+
   addListing({
-    category: values.get("category"),
-    condition: values.get("condition"),
-    date: --sequence,
-    description: values.get("description").trim(),
-    image: photo || "https://images.unsplash.com/photo-1497633762265-9d179a990aa6?auto=format&fit=crop&w=900&q=85",
-    initials: seller.split(/\s+/).map((part) => part[0]).join("").slice(0, 2).toUpperCase(),
-    price: Number(values.get("price")),
-    seller,
-    campus: values.get("campus").trim(),
-    title: values.get("title").trim(),
+    category: formValues.get("category"),
+    condition: formValues.get("condition"),
+    date: --newListingOrder,
+    description: formValues.get("description").trim(),
+    image:
+      uploadedPhoto ||
+      "https://images.unsplash.com/photo-1497633762265-9d179a990aa6?auto=format&fit=crop&w=900&q=85",
+    initials: sellerInitials,
+    price: Number(formValues.get("price")),
+    seller: sellerName,
+    campus: formValues.get("campus").trim(),
+    title: formValues.get("title").trim(),
     saved: "false",
     accent: "mint",
   });
-  form.reset();
-  photo = "";
+
+  // Clear the form and photo preview after the listing is added.
+  sellForm.reset();
+  uploadedPhoto = "";
   $("#photo-preview").replaceChildren();
   $("#photo-preview").hidden = true;
   $("#photo-prompt").hidden = false;
-  category = "All items";
-  savedOnly = false;
+
+  selectedCategory = "All items";
+  showSavedOnly = false;
   $("#sort-listings").value = "newest";
   sortListings();
-  showModal($("#sell-modal"), false);
+  setModalOpen($("#sell-modal"), false);
+
+  // This message confirms the listing was added to the current page.
   $("#toast-message").textContent = "Your listing is live on this page!";
   $("#toast-message").hidden = false;
-  setTimeout(() => { $("#toast-message").hidden = true; }, 2600);
+  setTimeout(() => {
+    $("#toast-message").hidden = true;
+  }, 2600);
 });
 
+// Apply the selected sort order when the page first opens.
 sortListings();
