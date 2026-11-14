@@ -1,6 +1,6 @@
 # Campus Cart
 
-A responsive, front-end-only student marketplace made with HTML, CSS, vanilla JavaScript, and Bootstrap. Open `index.html` in a browser or serve the folder with a static web server; Bootstrap is loaded from its public CDN.
+A responsive, front-end-only student marketplace built mostly in `index.html`: page markup and custom CSS are together, with Bootstrap as the only external stylesheet. A small vanilla JavaScript file handles search, filters, saved items, seller contact, image previews, and adding listings. Open `index.html` directly or serve the folder with any static web server.
 
 Students can browse sample listings priced in Indian rupees (INR), search and filter by category, save favorites, contact sellers through their email app, and post a listing with an optional image.
 
