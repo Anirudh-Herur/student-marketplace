@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <!-- Set the page encoding and screen size for the browser. -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Give the page a browser-tab title. -->
+  <title>Demo login | Campus Cart</title>
+  <!-- Load the shared page styling. -->
+  <link href="src/style.css" rel="stylesheet">
+</head>
+<!-- Tell shared JavaScript which page is open. -->
+<body data-page="login">
+  <!-- Use the same navigation as the marketplace. -->
+  <header class="site-header">
+    <a class="brand" href="index.html">Campus Cart</a>
+    <nav aria-label="Main navigation"><a href="index.html">Marketplace</a><a href="history.html">Purchase history</a><a href="inquiries.html">Inquiries</a></nav>
+    <button class="button secondary" id="storage-button" type="button">Choose data folder</button>
+  </header>
+  <!-- Explain that this profile is only saved in the browser demo. -->
+  <p class="storage-status" id="storage-status" role="status">Demo profile only. No account is created.</p>
+  <!-- Collect a name and email; this is not secure authentication. -->
+  <main class="page">
+    <section class="panel">
+      <h1>Student login</h1>
+      <p>This demo uses your name and email to show your history and inquiries. It does not verify accounts or store passwords.</p>
+      <!-- Submitting this form stores the demo profile locally. -->
+      <form class="form" id="login-form">
+        <label>Your name<input name="name" autocomplete="name" required></label>
+        <label>Student email<input name="email" type="email" autocomplete="email" required></label>
+        <button class="button" type="submit">Continue to marketplace</button>
+      </form>
+    </section>
+  </main>
+  <footer>Campus Cart · RV University · Front-end demo</footer>
+  <!-- Load interactions after the page controls are available. -->
+  <script src="src/app.js"></script>
+</body>
+</html>

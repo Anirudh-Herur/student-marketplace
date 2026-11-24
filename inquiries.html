@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <!-- Set the page encoding and screen size for the browser. -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Give the page a browser-tab title. -->
+  <title>Inquiries | Campus Cart</title>
+  <!-- Load the shared page styling. -->
+  <link href="src/style.css" rel="stylesheet">
+</head>
+<!-- Tell shared JavaScript which page is open. -->
+<body data-page="inquiries">
+  <!-- Use the same navigation as the marketplace. -->
+  <header class="site-header">
+    <a class="brand" href="index.html">Campus Cart</a>
+    <nav aria-label="Main navigation"><a href="index.html">Marketplace</a><a href="history.html">Purchase history</a><a href="inquiries.html">Inquiries</a><a href="login.html" id="login-link">Log in</a></nav>
+    <button class="button secondary" id="storage-button" type="button">Choose data folder</button>
+  </header>
+  <!-- Tell the student how to load data saved to a folder. -->
+  <p class="storage-status" id="storage-status" role="status">Choose the same data folder to load saved inquiries.</p>
+  <!-- Let students choose an item and save a demo message. -->
+  <main class="page">
+    <h1>Seller inquiries</h1>
+    <p class="note">Send an in-page message to a sample seller. Messages are only saved in this demo.</p>
+    <section class="panel">
+      <!-- The item menu is filled from examples and posted listings. -->
+      <form class="form" id="inquiry-form">
+        <label>Item<select name="listing" id="inquiry-listing" required></select></label>
+        <label>Message<textarea name="message" required placeholder="Ask the seller about this item"></textarea></label>
+        <button class="button" type="submit">Send inquiry</button>
+      </form>
+    </section>
+    <h2 class="inquiry-heading">Your sent inquiries</h2>
+    <!-- JavaScript inserts this profile's saved demo inquiries here. -->
+    <div id="inquiry-list"></div>
+    <p id="inquiry-empty">Log in to send an inquiry and see your messages here.</p>
+  </main>
+  <footer>Campus Cart · RV University</footer>
+  <!-- Load interactions after the page controls are available. -->
+  <script src="src/app.js"></script>
+</body>
+</html>

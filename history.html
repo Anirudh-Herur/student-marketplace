@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <!-- Set the page encoding and screen size for the browser. -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Give the page a browser-tab title. -->
+  <title>Purchase history | Campus Cart</title>
+  <!-- Load the shared page styling. -->
+  <link href="src/style.css" rel="stylesheet">
+</head>
+<!-- Tell shared JavaScript which page is open. -->
+<body data-page="history">
+  <!-- Use the same navigation as the marketplace. -->
+  <header class="site-header">
+    <a class="brand" href="index.html">Campus Cart</a>
+    <nav aria-label="Main navigation"><a href="index.html">Marketplace</a><a href="history.html">Purchase history</a><a href="inquiries.html">Inquiries</a><a href="login.html" id="login-link">Log in</a></nav>
+    <button class="button secondary" id="storage-button" type="button">Choose data folder</button>
+  </header>
+  <!-- Tell the student how to load data saved to a folder. -->
+  <p class="storage-status" id="storage-status" role="status">Choose the same data folder to load saved purchases.</p>
+  <!-- Show only demo purchases for the current browser profile. -->
+  <main class="page">
+    <h1>Purchase history</h1>
+    <p class="note">This is a demo record of items you mark as purchased. No payment is processed.</p>
+    <!-- JavaScript inserts purchase records into this empty list. -->
+    <div id="history-list"></div>
+    <p id="history-empty">Log in and record a demo purchase to see it here.</p>
+  </main>
+  <footer>Campus Cart · RV University</footer>
+  <!-- Load interactions after the page controls are available. -->
+  <script src="src/app.js"></script>
+</body>
+</html>

@@ -1,185 +1,284 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <!-- Set the page encoding and screen size for the browser. -->
+  <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Give this page a useful browser-tab title. -->
   <title>Campus Cart | RV University</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
-  <style>
-    /* Change these colors to update the page theme. */
-    :root { --green: #24513c; --pale: #edf2e8; --ink: #26332b; }
-    body { margin: 0; background: #fafaf6; color: var(--ink); font-family: Arial, sans-serif; }
-    header, footer { padding: 18px 5%; background: white; }
-    header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #e4e9e1; }
-    h1, h2, p { margin-top: 0; }
-    h1 { font-size: 46px; }
-    h2 { font-size: 26px; }
-    button, input, select, textarea { font: inherit; }
-    button { cursor: pointer; }
-    .brand { color: var(--green); font-size: 23px; font-weight: bold; text-decoration: none; }
-    .button { padding: 10px 16px; border: 0; border-radius: 6px; background: var(--green); color: white; }
-    .hero { display: flex; justify-content: space-between; align-items: center; gap: 30px; padding: 60px 8%; background: var(--pale); }
-    .hero-copy { max-width: 520px; }
-    .hero p { line-height: 1.6; }
-    .hero img { width: 40%; height: 260px; object-fit: cover; border-radius: 12px; }
-    .search { display: flex; gap: 8px; margin-top: 20px; }
-    .search input { flex: 1; padding: 12px; border: 1px solid #ccd5ca; border-radius: 6px; }
-    main { max-width: 1100px; margin: auto; padding: 40px 20px; }
-    .category-buttons, .filters { display: flex; gap: 10px; margin: 18px 0; }
-    .category-buttons button, .filters button { padding: 9px 14px; border: 1px solid #cad4c8; border-radius: 20px; background: white; }
-    .category-buttons button.active, .filters button.active { background: var(--green); color: white; }
-    .listing-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
-    .listing { overflow: hidden; border: 1px solid #e1e6df; border-radius: 10px; background: white; }
-    .listing img { display: block; width: 100%; height: 170px; object-fit: cover; }
-    .listing-info { padding: 14px; }
-    .listing-info button.title { padding: 0; border: 0; background: none; color: var(--ink); font-weight: bold; text-align: left; }
-    .price { margin: 10px 0; color: var(--green); font-size: 20px; font-weight: bold; }
-    .seller { color: #68746a; font-size: 14px; }
-    .save { float: right; border: 0; background: none; color: #a44; font-size: 20px; }
-    .banner { margin-top: 40px; padding: 28px; border-radius: 10px; background: var(--pale); }
-    [hidden] { display: none !important; }
-    .modal { position: fixed; inset: 0; z-index: 5; display: grid; place-items: center; padding: 20px; background: #0008; }
-    .modal-box { position: relative; width: min(600px, 100%); max-height: 90vh; overflow: auto; padding: 28px; border-radius: 10px; background: white; }
-    .modal-box img { width: 100%; max-height: 260px; object-fit: cover; }
-    .close { position: absolute; top: 10px; right: 12px; border: 0; background: none; font-size: 24px; }
-    .sell-form label { display: block; margin-top: 12px; font-weight: bold; }
-    .sell-form input, .sell-form select, .sell-form textarea { width: 100%; padding: 9px; border: 1px solid #ccd5ca; border-radius: 5px; }
-    .sell-form .button { margin-top: 16px; }
-    footer { color: #68746a; text-align: center; }
-  </style>
+  <!-- Load the one shared stylesheet used by every page. -->
+  <link href="src/style.css" rel="stylesheet">
 </head>
-<body>
-  <!-- Page header -->
-  <header>
-    <a class="brand" href="#">Campus Cart</a>
-    <span>RV University</span>
-    <div><button class="button" id="saved-button">Saved <span id="saved-count"></span></button> <button class="button open-sell">Sell an item</button></div>
+<!-- Tell the shared JavaScript that this is the marketplace page. -->
+<body data-page="home">
+  <!-- Main navigation links the marketplace's separate pages. -->
+  <header class="site-header">
+    <a class="brand" href="index.html">Campus Cart</a>
+    <nav aria-label="Main navigation">
+      <a href="index.html">Marketplace</a>
+      <a href="history.html">Purchase history</a>
+      <a href="inquiries.html">Inquiries</a>
+      <a href="login.html" id="login-link">Log in</a>
+    </nav>
+    <!-- These buttons open folder saving and the sell form. -->
+    <div class="header-actions">
+      <button class="button secondary" id="storage-button" type="button">Choose data folder</button>
+      <button class="button" id="open-sell" type="button">Sell an item</button>
+    </div>
   </header>
+  <!-- JavaScript updates this accessible message after saving. -->
+  <p class="storage-status" id="storage-status" role="status">Choose a folder to save listings and images between visits.</p>
 
-  <!-- Search banner -->
+  <!-- Introduce the campus marketplace and provide product search. -->
   <section class="hero">
-    <div class="hero-copy">
-      <p>THE RV UNIVERSITY STUDENT MARKETPLACE</p>
-      <h1>Good finds. Better prices.</h1>
-      <p>Buy and sell affordable books, calculators, and study supplies with other students.</p>
+    <div>
+      <p class="eyebrow">THE RV UNIVERSITY STUDENT MARKETPLACE</p>
+      <h1>Good finds.<br>Better prices.</h1>
+      <p>Buy and sell affordable course books and supplies with other students.</p>
+      <!-- Typing here filters product titles without reloading the page. -->
       <form class="search" id="search-form">
-        <input id="search-input" type="search" placeholder="Search course items" aria-label="Search course items">
-        <button class="button">Search</button>
+        <input id="search-input" type="search" placeholder="Search items" aria-label="Search course items">
+        <button class="button" type="submit">Search</button>
       </form>
     </div>
     <img src="https://images.unsplash.com/photo-1523580494863-6f3031224c94?auto=format&fit=crop&w=900&q=85" alt="Students at a university">
   </section>
 
+  <!-- Main content holds category filters, listings, and the sell invitation. -->
   <main>
-    <!-- Category buttons filter the listings below. -->
     <section>
       <h2>Browse categories</h2>
+      <!-- Each data-category value is used by JavaScript as a filter. -->
       <div class="category-buttons">
         <button class="active" data-category="All items">All items</button>
         <button data-category="Textbooks">Textbooks</button>
         <button data-category="Calculators">Calculators</button>
         <button data-category="Lab equipment">Lab equipment</button>
+        <button id="saved-button" type="button">Saved <span id="saved-count">0</span></button>
       </div>
     </section>
-
-    <!-- Edit each card's title, price, image, and data attributes to change a sample listing. -->
     <section id="listings">
       <h2>Items for your courses</h2>
+      <!-- This menu changes the order of the product cards. -->
       <div class="filters">
-        <button class="active" data-category="All items">All</button>
-        <button data-category="Textbooks">Textbooks</button>
-        <button data-category="Calculators">Calculators</button>
-        <button data-category="Lab equipment">Lab equipment</button>
-        <select id="sort"><option value="newest">Newest first</option><option value="low">Price: low to high</option><option value="high">Price: high to low</option></select>
+        <select id="sort" aria-label="Sort items">
+          <option value="newest">Newest first</option>
+          <option value="low">Price: low to high</option>
+          <option value="high">Price: high to low</option>
+        </select>
       </div>
 
+      <!-- Edit these sample cards to change the course items. Each data-* value is used by search, filters, and details. -->
       <div class="listing-grid" id="listing-grid">
-        <!-- CS1111: Basic Electrical and Electronics Engineering -->
-        <article class="listing" data-title="Electrical and Electronics Lab Kit" data-category="Lab equipment" data-price="450" data-date="1" data-seller="Srikar" data-place="Science Block" data-description="Breadboard, jumper wires, LEDs, and resistors for electrical engineering practicals." data-image="https://images.unsplash.com/photo-1581092334651-ddf26d9a09d0?auto=format&fit=crop&w=700&q=80">
+        <!-- Sample listing: change the values here to edit this item. -->
+        <article class="listing"
+          data-title="Electrical and Electronics Lab Kit"
+          data-category="Lab equipment"
+          data-price="450"
+          data-date="1"
+          data-seller="Srikar"
+          data-place="Science Block"
+          data-description="Breadboard, jumper wires, LEDs, and resistors for electrical engineering practicals."
+          data-image="https://images.unsplash.com/photo-1581092334651-ddf26d9a09d0?auto=format&fit=crop&w=700&q=80">
+          <!-- Add an image and the text/details button to each listing card. -->
           <img src="https://images.unsplash.com/photo-1581092334651-ddf26d9a09d0?auto=format&fit=crop&w=700&q=80" alt="Electrical lab equipment">
-          <div class="listing-info"><button class="save">♡</button><button class="title details">Electrical and Electronics Lab Kit</button><p class="price">₹450</p><p class="seller">Srikar · RVU Science Block</p></div>
+          <div class="listing-info">
+            <button class="save" type="button" aria-label="Save item">♡</button>
+            <button class="title details" type="button">Electrical and Electronics Lab Kit</button>
+            <p class="price">₹450</p>
+            <p class="seller">Srikar · RVU Science Block</p>
+          </div>
         </article>
-        <!-- CS1928: Constitution of India and Professional Ethics -->
-        <article class="listing" data-title="Constitution of India course reader" data-category="Textbooks" data-price="250" data-date="2" data-seller="Sahil" data-place="RVU Library" data-description="Course reader for the Constitution of India and Professional Ethics." data-image="https://images.unsplash.com/photo-1497633762265-9d179a990aa6?auto=format&fit=crop&w=700&q=80">
+        <!-- Sample listing: change the values here to edit this item. -->
+        <article class="listing"
+          data-title="Constitution of India course reader"
+          data-category="Textbooks"
+          data-price="250"
+          data-date="2"
+          data-seller="Sahil"
+          data-place="RVU Library"
+          data-description="Course reader for the Constitution of India and Professional Ethics."
+          data-image="https://images.unsplash.com/photo-1497633762265-9d179a990aa6?auto=format&fit=crop&w=700&q=80">
           <img src="https://images.unsplash.com/photo-1497633762265-9d179a990aa6?auto=format&fit=crop&w=700&q=80" alt="Course books">
-          <div class="listing-info"><button class="save">♡</button><button class="title details">Constitution of India course reader</button><p class="price">₹250</p><p class="seller">Sahil · RVU Library</p></div>
+          <div class="listing-info">
+            <button class="save" type="button" aria-label="Save item">♡</button>
+            <button class="title details" type="button">Constitution of India course reader</button>
+            <p class="price">₹250</p>
+            <p class="seller">Sahil · RVU Library</p>
+          </div>
         </article>
-        <!-- CS1812: Discrete Mathematics and Set Theory -->
-        <article class="listing" data-title="Discrete Mathematics textbook" data-category="Textbooks" data-price="300" data-date="3" data-seller="Naman" data-place="Academic Block A" data-description="Used textbook with worked examples for discrete mathematics and set theory." data-image="https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&w=700&q=80">
+        <!-- Sample listing: change the values here to edit this item. -->
+        <article class="listing"
+          data-title="Discrete Mathematics textbook"
+          data-category="Textbooks"
+          data-price="300"
+          data-date="3"
+          data-seller="Naman"
+          data-place="Academic Block A"
+          data-description="Used textbook with worked examples for discrete mathematics and set theory."
+          data-image="https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&w=700&q=80">
           <img src="https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&w=700&q=80" alt="Mathematics textbook">
-          <div class="listing-info"><button class="save">♡</button><button class="title details">Discrete Mathematics textbook</button><p class="price">₹300</p><p class="seller">Naman · RVU Academic Block A</p></div>
+          <div class="listing-info">
+            <button class="save" type="button" aria-label="Save item">♡</button>
+            <button class="title details" type="button">Discrete Mathematics textbook</button>
+            <p class="price">₹300</p>
+            <p class="seller">Naman · RVU Academic Block A</p>
+          </div>
         </article>
-        <!-- Calculator for mathematics and engineering courses -->
-        <article class="listing" data-title="Scientific calculator" data-category="Calculators" data-price="700" data-date="4" data-seller="Anirudh" data-place="Student Centre" data-description="Working scientific calculator for maths exercises and engineering calculations." data-image="https://images.unsplash.com/photo-1587145820266-a5951ee6f620?auto=format&fit=crop&w=700&q=80">
+        <!-- Sample listing: change the values here to edit this item. -->
+        <article class="listing"
+          data-title="Scientific calculator"
+          data-category="Calculators"
+          data-price="700"
+          data-date="4"
+          data-seller="Anirudh"
+          data-place="Student Centre"
+          data-description="Working scientific calculator for maths exercises and engineering calculations."
+          data-image="https://images.unsplash.com/photo-1587145820266-a5951ee6f620?auto=format&fit=crop&w=700&q=80">
           <img src="https://images.unsplash.com/photo-1587145820266-a5951ee6f620?auto=format&fit=crop&w=700&q=80" alt="Scientific calculator">
-          <div class="listing-info"><button class="save">♡</button><button class="title details">Scientific calculator</button><p class="price">₹700</p><p class="seller">Anirudh · RVU Student Centre</p></div>
+          <div class="listing-info">
+            <button class="save" type="button" aria-label="Save item">♡</button>
+            <button class="title details" type="button">Scientific calculator</button>
+            <p class="price">₹700</p>
+            <p class="seller">Anirudh · RVU Student Centre</p>
+          </div>
         </article>
-        <!-- CS1927: English Communication -->
-        <article class="listing" data-title="English Communication workbook" data-category="Textbooks" data-price="200" data-date="5" data-seller="Priya" data-place="RVU Library" data-description="Workbook with writing, presentation, and discussion exercises." data-image="https://images.unsplash.com/photo-1544947950-fa07a98d237f?auto=format&fit=crop&w=700&q=80">
+        <!-- Sample listing: change the values here to edit this item. -->
+        <article class="listing"
+          data-title="English Communication workbook"
+          data-category="Textbooks"
+          data-price="200"
+          data-date="5"
+          data-seller="Priya"
+          data-place="RVU Library"
+          data-description="Workbook with writing, presentation, and discussion exercises."
+          data-image="https://images.unsplash.com/photo-1544947950-fa07a98d237f?auto=format&fit=crop&w=700&q=80">
           <img src="https://images.unsplash.com/photo-1544947950-fa07a98d237f?auto=format&fit=crop&w=700&q=80" alt="Workbook">
-          <div class="listing-info"><button class="save">♡</button><button class="title details">English Communication workbook</button><p class="price">₹200</p><p class="seller">Priya · RVU Library</p></div>
+          <div class="listing-info">
+            <button class="save" type="button" aria-label="Save item">♡</button>
+            <button class="title details" type="button">English Communication workbook</button>
+            <p class="price">₹200</p>
+            <p class="seller">Priya · RVU Library</p>
+          </div>
         </article>
-        <!-- CS1806: Exploring Science -->
-        <article class="listing" data-title="Exploring Science experiment kit" data-category="Lab equipment" data-price="400" data-date="6" data-seller="Aarav" data-place="Science Block" data-description="Reusable magnifier and measuring tools for science activities." data-image="https://images.unsplash.com/photo-1532094349884-543bc11b234d?auto=format&fit=crop&w=700&q=80">
+        <!-- Sample listing: change the values here to edit this item. -->
+        <article class="listing"
+          data-title="Exploring Science experiment kit"
+          data-category="Lab equipment"
+          data-price="400"
+          data-date="6"
+          data-seller="Aarav"
+          data-place="Science Block"
+          data-description="Reusable magnifier and measuring tools for science activities."
+          data-image="https://images.unsplash.com/photo-1532094349884-543bc11b234d?auto=format&fit=crop&w=700&q=80">
           <img src="https://images.unsplash.com/photo-1532094349884-543bc11b234d?auto=format&fit=crop&w=700&q=80" alt="Science experiment tools">
-          <div class="listing-info"><button class="save">♡</button><button class="title details">Exploring Science experiment kit</button><p class="price">₹400</p><p class="seller">Aarav · RVU Science Block</p></div>
+          <div class="listing-info">
+            <button class="save" type="button" aria-label="Save item">♡</button>
+            <button class="title details" type="button">Exploring Science experiment kit</button>
+            <p class="price">₹400</p>
+            <p class="seller">Aarav · RVU Science Block</p>
+          </div>
         </article>
-        <!-- CS1003: Programming in C -->
-        <article class="listing" data-title="Programming in C textbook" data-category="Textbooks" data-price="300" data-date="7" data-seller="Naman" data-place="Academic Block A" data-description="Beginner C programming book covering functions, arrays, and pointers." data-image="https://images.unsplash.com/photo-1497633762265-9d179a990aa6?auto=format&fit=crop&w=700&q=80">
+        <!-- Sample listing: change the values here to edit this item. -->
+        <article class="listing"
+          data-title="Programming in C textbook"
+          data-category="Textbooks"
+          data-price="300"
+          data-date="7"
+          data-seller="Naman"
+          data-place="Academic Block A"
+          data-description="Beginner C programming book covering functions, arrays, and pointers."
+          data-image="https://images.unsplash.com/photo-1497633762265-9d179a990aa6?auto=format&fit=crop&w=700&q=80">
           <img src="https://images.unsplash.com/photo-1497633762265-9d179a990aa6?auto=format&fit=crop&w=700&q=80" alt="Programming textbook">
-          <div class="listing-info"><button class="save">♡</button><button class="title details">Programming in C textbook</button><p class="price">₹300</p><p class="seller">Naman · RVU Academic Block A</p></div>
+          <div class="listing-info">
+            <button class="save" type="button" aria-label="Save item">♡</button>
+            <button class="title details" type="button">Programming in C textbook</button>
+            <p class="price">₹300</p>
+            <p class="seller">Naman · RVU Academic Block A</p>
+          </div>
         </article>
-        <!-- CS1309: Web Technology -->
-        <article class="listing" data-title="Web Technology guide" data-category="Textbooks" data-price="300" data-date="8" data-seller="Sahil" data-place="RVU Library" data-description="A guide to HTML, CSS, and JavaScript for Web Technology." data-image="https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&w=700&q=80">
+        <!-- Sample listing: change the values here to edit this item. -->
+        <article class="listing"
+          data-title="Web Technology guide"
+          data-category="Textbooks"
+          data-price="300"
+          data-date="8"
+          data-seller="Sahil"
+          data-place="RVU Library"
+          data-description="A guide to HTML, CSS, and JavaScript for Web Technology."
+          data-image="https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&w=700&q=80">
           <img src="https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&w=700&q=80" alt="Web development book">
-          <div class="listing-info"><button class="save">♡</button><button class="title details">Web Technology guide</button><p class="price">₹300</p><p class="seller">Sahil · RVU Library</p></div>
+          <div class="listing-info">
+            <button class="save" type="button" aria-label="Save item">♡</button>
+            <button class="title details" type="button">Web Technology guide</button>
+            <p class="price">₹300</p>
+            <p class="seller">Sahil · RVU Library</p>
+          </div>
         </article>
-        <!-- CS1929: Structured Innovation and Design Thinking -->
-        <article class="listing" data-title="Design Thinking workbook" data-category="Textbooks" data-price="250" data-date="9" data-seller="Srikar" data-place="Student Centre" data-description="Workbook for brainstorming, prototyping, and design thinking activities." data-image="https://images.unsplash.com/photo-1544947950-fa07a98d237f?auto=format&fit=crop&w=700&q=80">
+        <!-- Sample listing: change the values here to edit this item. -->
+        <article class="listing"
+          data-title="Design Thinking workbook"
+          data-category="Textbooks"
+          data-price="250"
+          data-date="9"
+          data-seller="Srikar"
+          data-place="Student Centre"
+          data-description="Workbook for brainstorming, prototyping, and design thinking activities."
+          data-image="https://images.unsplash.com/photo-1544947950-fa07a98d237f?auto=format&fit=crop&w=700&q=80">
           <img src="https://images.unsplash.com/photo-1544947950-fa07a98d237f?auto=format&fit=crop&w=700&q=80" alt="Design workbook">
-          <div class="listing-info"><button class="save">♡</button><button class="title details">Design Thinking workbook</button><p class="price">₹250</p><p class="seller">Srikar · RVU Student Centre</p></div>
+          <div class="listing-info">
+            <button class="save" type="button" aria-label="Save item">♡</button>
+            <button class="title details" type="button">Design Thinking workbook</button>
+            <p class="price">₹250</p>
+            <p class="seller">Srikar · RVU Student Centre</p>
+          </div>
         </article>
       </div>
+      <!-- JavaScript shows this when all filters return zero cards. -->
       <p id="empty-message" hidden>No items found. Try a different search or category.</p>
     </section>
-
+    <!-- Encourage students to open the listing form. -->
     <section class="banner">
       <h2>Have something to sell?</h2>
       <p>Pass on your course books and supplies to another RV University student.</p>
-      <button class="button open-sell">List an item</button>
+      <button class="button" id="open-sell-bottom" type="button">List an item</button>
     </section>
   </main>
 
-  <!-- The details box is filled when a listing title is clicked. -->
+  <!-- This dialog displays an item and demo-only purchase/inquiry actions. -->
   <div class="modal" id="details-modal" hidden>
-    <div class="modal-box">
-      <button class="close" data-close="details-modal">×</button>
+    <section class="modal-box">
+      <button class="close" data-close="details-modal" type="button">×</button>
       <img id="detail-image" alt="">
       <h2 id="detail-title"></h2><p id="detail-price" class="price"></p>
       <p id="detail-description"></p><p id="detail-seller" class="seller"></p>
-      <a class="button" id="contact-link">Contact seller</a>
-    </div>
+      <button class="button" id="record-purchase" type="button">Record as purchased</button>
+      <a class="button secondary" id="ask-about-item" href="inquiries.html">Send an inquiry</a>
+      <p class="note">Demo only: this does not process a payment or confirm a real purchase.</p>
+    </section>
   </div>
 
-  <!-- Change the sell form fields here. New listings only stay until refresh. -->
+  <!-- This dialog collects information for a new student listing. -->
   <div class="modal" id="sell-modal" hidden>
-    <div class="modal-box">
-      <button class="close" data-close="sell-modal">×</button>
+    <section class="modal-box">
+      <button class="close" data-close="sell-modal" type="button">×</button>
       <h2>List an item</h2>
-      <form class="sell-form" id="sell-form">
+      <form class="form" id="sell-form">
         <label>Item name<input name="title" required></label>
         <label>Price in rupees<input name="price" type="number" min="1" required></label>
         <label>Category<select name="category"><option>Textbooks</option><option>Calculators</option><option>Lab equipment</option></select></label>
         <label>Your name<input name="seller" required></label>
         <label>Campus meetup spot<input name="place" required></label>
         <label>Item details<textarea name="description" required></textarea></label>
-        <label>Photo<input name="photo" type="file" accept="image/*"></label>
-        <button class="button">Post listing</button>
+        <!-- The selected photo is previewed here before posting the listing. -->
+        <label>Item photo<input name="photo" type="file" accept="image/*"></label>
+        <img id="photo-preview" class="preview" alt="Selected item preview" hidden>
+        <button class="button" type="submit">Post listing</button>
       </form>
-    </div>
+    </section>
   </div>
-
-  <footer>Campus Cart · Made for RV University students · Listings reset when the page is refreshed.</footer>
-  <script src="src/main.js"></script>
+  <footer>Campus Cart · RV University · Demo listings reset only when you clear the saved data.</footer>
+  <!-- Load shared page behavior after the HTML controls are ready. -->
+  <script src="src/app.js"></script>
 </body>
 </html>

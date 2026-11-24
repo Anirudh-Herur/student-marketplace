@@ -1,17 +1,20 @@
 # Campus Cart
 
-A beginner-friendly, front-end-only marketplace demo for RV University students. It uses HTML, CSS, Bootstrap, and plain JavaScript. Open `index.html` in a browser to try it.
+A front-end-only RV University marketplace demo made with HTML, CSS, and plain JavaScript. It does not use React, Bootstrap, or other frameworks. Open `index.html`, `login.html`, `history.html`, and `inquiries.html` from a local web server such as VS Code Live Server.
 
-## Change the sample items
+## Saving data and images
 
-Each item is an `<article class="listing">` in `index.html`. Change its title, price, category, seller, description, and image together. The `data-date` number controls its newest-first order.
+On each page, choose the project folder (the folder containing `index.html`). The app saves listing, purchase-history, and inquiry data in `marketplace.json`, and uploaded item photos in an `images` folder. Choose the same folder again after opening another page. Folder saving works in browsers that support the File System Access API, such as Chrome and Edge, when served from localhost. Other browsers keep data only in that browser's local storage.
 
-## Change the styles
+## Demo account features
 
-The CSS is in the `<style>` section near the top of `index.html`. The page uses a fixed desktop layout without small-screen media styles.
+The login page stores a name and email in this browser to separate each student's purchase history and inquiries. There is no password, account verification, server, or secure authentication. "Record as purchased" only adds a demo history entry; it does not take payment.
 
-## Change the interactions
+## Changing the site
 
-`src/main.js` has separate functions for searching, filtering, sorting, saving, showing details, and adding a listing.
+- Sample item cards are in `index.html`. The matching item names are listed in `sampleTitles` in `src/app.js` for the inquiry dropdown.
+- Main page content and form fields are in `index.html`; the other pages are `login.html`, `history.html`, and `inquiries.html`.
+- Shared colors and layouts are in `src/style.css`.
+- Page behavior and data saving are in `src/app.js`.
 
-Listings and saved items stay in the browser page only and reset when it is refreshed. There is no account, server, or payment system. Contacting a seller opens the visitor's email app.
+The data file is JSON so it can be edited in a text editor. It is not an Excel workbook.

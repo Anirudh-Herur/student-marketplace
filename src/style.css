@@ -1,0 +1,525 @@
+/* Keep the small color palette easy to change in one place. */
+:root {
+  --forest: #174b3a; /* Main university green for buttons and links. */
+  --forest-dark: #10392c; /* Darker green for hover and contrast. */
+  --leaf: #dcebe1; /* Light green for soft background areas. */
+  --cream: #f7f5ee; /* Warm page background instead of plain white. */
+  --ink: #1d2b25; /* Main text color. */
+  --muted: #65756b; /* Secondary text color. */
+  --line: #e4e9e2; /* Fine borders around cards and controls. */
+  --gold: #d59a3d; /* Small accent color for prices and highlights. */
+  --shadow: 0 16px 40px #173a2b12; /* Soft shadow used on raised cards. */
+}
+
+/* Give the whole page a calm, warm campus-market feel. */
+body {
+  margin: 0; /* Remove the browser's default outside spacing. */
+  background: var(--cream); /* Use the shared warm background color. */
+  color: var(--ink); /* Make normal text dark and easy to read. */
+  font-family: "Segoe UI", Arial, sans-serif; /* Use fonts already on the computer. */
+  line-height: 1.55; /* Give paragraphs room to breathe. */
+}
+
+/* Make form controls match the page's chosen typeface. */
+button, input, select, textarea {
+  font: inherit; /* Use the same font and size as surrounding text. */
+}
+
+/* Show a pointer when a button can be clicked. */
+button {
+  cursor: pointer; /* Give a familiar clickable cursor. */
+}
+
+/* Keep keyboard users aware of the currently focused control. */
+:focus-visible {
+  outline: 3px solid #d59a3d; /* Add a high-contrast keyboard focus ring. */
+  outline-offset: 3px; /* Separate the ring slightly from the control. */
+}
+
+/* Make the hidden attribute reliably hide dialogs and empty previews. */
+[hidden] {
+  display: none !important; /* Prevent layout rules from overriding hidden. */
+}
+
+/* Keep the main navigation visible and neatly spaced. */
+.site-header {
+  display: flex; /* Place the brand, links, and buttons in one row. */
+  flex-wrap: wrap; /* Let header groups move instead of colliding. */
+  align-items: center; /* Vertically align the header contents. */
+  justify-content: space-between; /* Spread the groups across the header. */
+  gap: 24px; /* Keep the groups from touching. */
+  padding: 18px 5%; /* Add comfortable space around the header. */
+  background: #fffefa; /* Use a soft white surface for the navigation. */
+  border-bottom: 1px solid var(--line); /* Separate navigation from page content. */
+  box-shadow: 0 5px 20px #173a2b08; /* Give the top bar a very light lift. */
+}
+
+/* Make the site name look like a clear wordmark. */
+.brand {
+  color: var(--forest); /* Use the university green for the brand. */
+  font-size: 23px; /* Make the wordmark larger than navigation links. */
+  font-weight: 800; /* Give the wordmark a confident weight. */
+  letter-spacing: -0.7px; /* Tighten the letters slightly. */
+  text-decoration: none; /* Remove the default link underline. */
+  white-space: nowrap; /* Keep the brand on one line. */
+}
+
+/* Lay out the page links in a horizontal row. */
+.site-header nav {
+  display: flex; /* Place each navigation link side by side. */
+  flex-wrap: wrap; /* Let links wrap when the header has less room. */
+  align-items: center; /* Align links along the same center line. */
+  gap: 20px; /* Add space between links. */
+}
+
+/* Style links so their color and underline respond to interaction. */
+.site-header nav a {
+  color: #43584c; /* Keep navigation clear but less bold than buttons. */
+  font-size: 14px; /* Keep links compact inside the header. */
+  font-weight: 600; /* Make links easy to scan. */
+  text-decoration: none; /* Remove default link underlines. */
+  transition: color 160ms ease; /* Smooth out the hover color change. */
+  white-space: nowrap; /* Keep short navigation labels together. */
+}
+
+/* Highlight a link while the pointer is over it. */
+.site-header nav a:hover {
+  color: var(--forest); /* Use stronger green on hover. */
+  text-decoration: underline; /* Reinforce that the link is interactive. */
+  text-underline-offset: 4px; /* Keep the underline away from the letters. */
+}
+
+/* Group header buttons without pushing them together. */
+.header-actions {
+  display: flex; /* Place header buttons side by side. */
+  flex-wrap: wrap; /* Keep buttons from forcing the header wider. */
+  gap: 9px; /* Leave a small space between buttons. */
+}
+
+/* Provide a consistent style for the main action buttons. */
+.button {
+  display: inline-flex; /* Center the label in the button. */
+  align-items: center; /* Center button text vertically. */
+  justify-content: center; /* Center button text horizontally. */
+  padding: 11px 17px; /* Make the button comfortable to click. */
+  border: 1px solid var(--forest); /* Define the button edge clearly. */
+  border-radius: 8px; /* Give controls a polished rounded shape. */
+  background: var(--forest); /* Use the main green button color. */
+  color: white; /* Keep button text legible. */
+  font-size: 14px; /* Keep labels neat and compact. */
+  font-weight: 700; /* Make action labels stand out. */
+  text-decoration: none; /* Remove link underline when a link is a button. */
+  white-space: nowrap; /* Keep button labels readable on one line. */
+  transition: background 160ms ease, transform 160ms ease, box-shadow 160ms ease; /* Smooth the button hover. */
+}
+
+/* Make the main button feel responsive when hovered. */
+.button:hover {
+  transform: translateY(-1px); /* Lift the button a tiny amount. */
+  background: var(--forest-dark); /* Darken the button for hover feedback. */
+  box-shadow: 0 7px 16px #174b3a24; /* Add a soft hover shadow. */
+}
+
+/* Use a light style for secondary actions. */
+.button.secondary {
+  border-color: #d6e2d9; /* Soften the border on secondary buttons. */
+  background: #eef4ee; /* Use a pale green button background. */
+  color: var(--forest); /* Keep secondary button labels green. */
+}
+
+/* Keep the secondary hover color subtle. */
+.button.secondary:hover {
+  background: #e2eee5; /* Darken the pale background slightly. */
+}
+
+/* Make storage instructions noticeable but not distracting. */
+.storage-status {
+  margin: 0; /* Remove default paragraph margins. */
+  padding: 9px 5%; /* Line up text with the header content. */
+  background: #edf3ec; /* Separate status from the main page. */
+  color: #52675a; /* Use a softer green-gray for help text. */
+  font-size: 13px; /* Keep the status message compact. */
+}
+
+/* Create a large editorial hero area for the marketplace. */
+.hero {
+  display: grid; /* Put the headline and image in balanced columns. */
+  grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr); /* Let each column shrink without overflowing. */
+  align-items: center; /* Vertically center hero text and image. */
+  justify-content: space-between; /* Give both sides their own space. */
+  gap: 52px; /* Keep the text away from the photo. */
+  padding: 62px max(8%, calc((100% - 1120px) / 2)); /* Align hero content with the page center. */
+  background: radial-gradient(ellipse at 85% 20%, #ffffffa8, transparent 37%), linear-gradient(120deg, #e6efe5, #f3efe3); /* Add gentle depth without images or libraries. */
+}
+
+/* Keep the hero text column a comfortable width. */
+.hero > div {
+  max-width: 550px; /* Stop long text from becoming too wide. */
+  min-width: 0; /* Allow the text column to shrink with the available space. */
+}
+
+/* Crop the campus photo neatly inside the second hero column. */
+.hero > img {
+  width: 100%; /* Fill the image column without overflowing it. */
+  height: 300px; /* Give the hero image a strong visual presence. */
+  border: 1px solid #ffffffa8; /* Add a soft edge around the photo. */
+  border-radius: 15px; /* Match the rounded product cards. */
+  box-shadow: 0 18px 40px #173a2b20; /* Lift the image gently from the background. */
+  object-fit: cover; /* Crop the photo instead of stretching it. */
+}
+
+/* Style the small heading above the main headline. */
+.eyebrow {
+  margin: 0 0 14px; /* Keep the label close to the headline. */
+  color: #9a6b22; /* Use the warm accent color. */
+  font-size: 12px; /* Make it smaller than body copy. */
+  font-weight: 800; /* Make the label easy to notice. */
+  letter-spacing: 1.7px; /* Give the uppercase label an editorial feel. */
+}
+
+/* Set a strong headline with compact spacing. */
+.hero h1 {
+  margin: 0; /* Remove default heading spacing. */
+  color: var(--forest); /* Use the brand green for the headline. */
+  font-family: Georgia, "Times New Roman", serif; /* Add a classic editorial contrast. */
+  font-size: clamp(36px, 5vw, 58px); /* Keep the headline bold but let it fit the column. */
+  font-weight: 700; /* Keep the headline bold. */
+  letter-spacing: -2px; /* Tighten the large headline lettering. */
+  line-height: 1.04; /* Keep its two lines close together. */
+}
+
+/* Style the supporting hero sentence. */
+.hero p:not(.eyebrow) {
+  max-width: 460px; /* Keep the sentence readable. */
+  margin: 18px 0 24px; /* Separate the text from headline and search. */
+  color: #52675a; /* Use a softer color than the headline. */
+  font-size: 17px; /* Make the introduction slightly larger. */
+}
+
+/* Put the search box and button together. */
+.search {
+  display: flex; /* Keep input and button in one row. */
+  gap: 9px; /* Separate the input from its submit button. */
+  max-width: 500px; /* Match the width to the text column. */
+  padding: 6px; /* Give the search controls a framed area. */
+  border: 1px solid #dce5dc; /* Outline the complete search control. */
+  border-radius: 11px; /* Round the search frame. */
+  background: #fffefa; /* Keep the input area light and clear. */
+  box-shadow: 0 10px 24px #173a2b0d; /* Add a quiet raised effect. */
+}
+
+/* Let the search text field use the remaining space. */
+.search input {
+  flex: 1; /* Expand the input to fill the search frame. */
+  min-width: 0; /* Let the input shrink without making the page wider. */
+  padding: 10px 12px; /* Add space inside the text box. */
+  border: 0; /* Let the outer search frame provide the border. */
+  border-radius: 7px; /* Match the other rounded controls. */
+  background: transparent; /* Blend the input into its frame. */
+  color: var(--ink); /* Use the main text color. */
+}
+
+/* Keep page content centered and readable. */
+main {
+  max-width: 1160px; /* Set a comfortable maximum content width. */
+  margin: 0 auto; /* Center the main content horizontally. */
+  padding: 38px 28px; /* Add space inside the main content area. */
+}
+
+/* Use consistent heading colors and letter shapes. */
+h1, h2, h3 {
+  color: var(--ink); /* Keep headings dark for strong contrast. */
+  letter-spacing: -0.45px; /* Slightly tighten heading text. */
+}
+
+/* Set a clean size for section headings. */
+h2 {
+  margin: 0; /* Remove browser heading margins. */
+  font-size: 26px; /* Separate section titles from body text. */
+}
+
+/* Arrange category and sort controls with even spacing. */
+.category-buttons, .filters {
+  display: flex; /* Lay controls out in a row. */
+  flex-wrap: wrap; /* Let controls wrap when space is limited. */
+  gap: 9px; /* Keep consistent spacing between controls. */
+  margin: 16px 0 22px; /* Separate controls from headings and cards. */
+}
+
+/* Give filter controls a shared shape and readable size. */
+.category-buttons button, .filters button, .filters select {
+  padding: 9px 14px; /* Add click space around control labels. */
+  border: 1px solid #d9e1d8; /* Use a light outline around the controls. */
+  border-radius: 999px; /* Make category choices pill-shaped. */
+  background: #fffefa; /* Keep controls light against the page. */
+  color: #42584b; /* Use calm green text. */
+  font-size: 13px; /* Keep controls smaller than section headings. */
+  font-weight: 650; /* Make short labels readable. */
+  transition: background 150ms ease, color 150ms ease, border 150ms ease; /* Smooth selected and hover changes. */
+}
+
+/* Emphasize the selected category. */
+.category-buttons button.active {
+  border-color: var(--forest); /* Match border to selected background. */
+  background: var(--forest); /* Show which category is selected. */
+  color: white; /* Keep selected text readable. */
+}
+
+/* Add a small visual response when a category is hovered. */
+.category-buttons button:not(.active):hover {
+  border-color: #a9c1ae; /* Give the hovered category more definition. */
+  background: #eef4ee; /* Tint the hovered category. */
+}
+
+/* Align the sort dropdown with the right edge of its filter area. */
+.filters {
+  justify-content: flex-end; /* Place sorting controls at the right. */
+}
+
+/* Make the item cards form a neat three-column grid. */
+.listing-grid {
+  display: grid; /* Use a grid for consistent card alignment. */
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); /* Fit as many readable product cards as possible. */
+  gap: 20px; /* Leave comfortable space between cards. */
+}
+
+/* Make each listing look like a distinct product card. */
+.listing {
+  overflow: hidden; /* Keep images inside the rounded card corners. */
+  border: 1px solid var(--line); /* Outline each listing. */
+  border-radius: 13px; /* Give the card a softer shape. */
+  background: #fffefa; /* Use a warm white card surface. */
+  box-shadow: 0 5px 18px #173a2b08; /* Add a subtle resting shadow. */
+  transition: transform 180ms ease, box-shadow 180ms ease, border 180ms ease; /* Smooth card hover effects. */
+}
+
+/* Lift a card slightly when the pointer is over it. */
+.listing:hover {
+  transform: translateY(-4px); /* Raise the card to show it is interactive. */
+  border-color: #cfdbd0; /* Slightly darken the card outline. */
+  box-shadow: var(--shadow); /* Increase the card's shadow. */
+}
+
+/* Make listing photos fill the top part of each card. */
+.listing > img {
+  display: block; /* Remove a small baseline gap below images. */
+  width: 100%; /* Stretch the image across the card. */
+  height: 175px; /* Keep image heights consistent. */
+  object-fit: cover; /* Fill the frame without stretching the image. */
+  background: var(--leaf); /* Show a gentle fallback while an image loads. */
+}
+
+/* Add space around each listing's title, price, and seller. */
+.listing-info {
+  min-height: 145px; /* Align card text areas despite different titles. */
+  padding: 16px; /* Give the card information breathing room. */
+}
+
+/* Style the listing title as a text button that opens details. */
+.listing-info .title {
+  max-width: 90%; /* Keep the title away from the save icon. */
+  padding: 0; /* Align title with the card content. */
+  border: 0; /* Avoid a visible button frame. */
+  background: none; /* Blend the button with the card. */
+  color: var(--ink); /* Keep the title readable. */
+  font-size: 15px; /* Make item names easy to scan. */
+  font-weight: 750; /* Emphasize the item name. */
+  line-height: 1.35; /* Keep multi-line titles compact. */
+  text-align: left; /* Align the title with the rest of the card. */
+}
+
+/* Show that the title button can be opened. */
+.listing-info .title:hover {
+  color: var(--forest); /* Color the title green on hover. */
+}
+
+/* Highlight item prices with a small gold accent. */
+.price {
+  margin: 10px 0 5px; /* Keep the price close to the title. */
+  color: var(--forest); /* Keep price readable and aligned with brand. */
+  font-size: 20px; /* Make the price easy to find. */
+  font-weight: 800; /* Give the amount enough emphasis. */
+}
+
+/* Keep seller and helper text visually secondary. */
+.seller, .note {
+  color: var(--muted); /* Use muted text for supporting details. */
+  font-size: 13px; /* Keep details from competing with item titles. */
+}
+
+/* Put the save icon in the top-right of the listing text. */
+.save {
+  float: right; /* Place the heart beside the item title. */
+  padding: 0 2px; /* Keep the icon's clickable area compact. */
+  border: 0; /* Remove the browser's button outline style. */
+  background: none; /* Blend the heart with the card. */
+  color: #b34f55; /* Make the heart recognizable. */
+  font-size: 23px; /* Make the icon easy to click. */
+  line-height: 1; /* Keep the icon aligned with the title. */
+}
+
+/* Create a distinct call-to-action block near the bottom of home. */
+.banner {
+  margin-top: 40px; /* Leave a clear gap after item listings. */
+  padding: 30px 34px; /* Give the callout plenty of internal space. */
+  border: 1px solid #d5e4d7; /* Define the banner edge. */
+  border-radius: 14px; /* Match the card shape. */
+  background: linear-gradient(110deg, #e2eee3, #f4eedf); /* Add a soft green-to-cream blend. */
+}
+
+/* Give the sell callout a stronger title. */
+.banner h2 {
+  margin-bottom: 6px; /* Keep the sentence close to its heading. */
+  color: var(--forest); /* Tie the callout to the university brand. */
+}
+
+/* Separate the callout text from its button. */
+.banner p {
+  margin: 0 0 17px; /* Leave room above the action button. */
+  color: #52675a; /* Use softer text inside the callout. */
+}
+
+/* Style the shared panel used by forms. */
+.panel {
+  margin-top: 28px; /* Separate the panel from the page title. */
+  padding: 28px; /* Make room around the form fields. */
+  border: 1px solid var(--line); /* Outline the panel. */
+  border-radius: 14px; /* Match the listing card corners. */
+  background: #fffefa; /* Use a light panel background. */
+  box-shadow: var(--shadow); /* Lift the panel from the page. */
+}
+
+/* Keep form labels easy to scan. */
+.form label {
+  display: block; /* Put each input beneath its label. */
+  margin: 14px 0; /* Separate one field from the next. */
+  color: #35473c; /* Keep labels darker than helper text. */
+  font-size: 14px; /* Use a readable label size. */
+  font-weight: 700; /* Make each field name distinct. */
+}
+
+/* Give form fields a consistent appearance. */
+.form input, .form select, .form textarea {
+  display: block; /* Place controls on their own row. */
+  width: 100%; /* Align all fields to the same width. */
+  margin-top: 6px; /* Separate field control from its label. */
+  padding: 11px 12px; /* Make fields comfortable to use. */
+  border: 1px solid #d4ddd4; /* Give controls a subtle outline. */
+  border-radius: 8px; /* Match the rounded visual style. */
+  background: #fff; /* Keep editable fields distinct from the panel. */
+  color: var(--ink); /* Keep entered text easy to read. */
+}
+
+/* Make long messages comfortable to type. */
+.form textarea {
+  min-height: 110px; /* Give the message field useful starting height. */
+  resize: vertical; /* Let users make the field taller. */
+}
+
+/* Separate the form's submit action from the last field. */
+.form .button {
+  margin-top: 10px; /* Add room before the form action. */
+}
+
+/* Show a preview of the selected product photo. */
+.preview {
+  display: block; /* Put the image on its own row. */
+  max-width: 260px; /* Keep the preview from taking over the form. */
+  max-height: 190px; /* Limit the preview's height. */
+  margin-top: 12px; /* Add space above the preview. */
+  border: 1px solid var(--line); /* Define the preview edge. */
+  border-radius: 9px; /* Match cards and controls. */
+  object-fit: cover; /* Fill the preview without stretching it. */
+}
+
+/* Center and size the content pages. */
+.page {
+  max-width: 760px; /* Keep forms and lists a readable width. */
+  margin: 42px auto; /* Center the page content with vertical space. */
+  padding: 0 22px; /* Keep text away from the viewport edges. */
+}
+
+/* Style the main heading on secondary pages. */
+.page h1 {
+  margin: 0; /* Remove default heading margins. */
+  color: var(--forest); /* Use brand green for the page title. */
+  font-family: Georgia, "Times New Roman", serif; /* Match the hero heading. */
+  font-size: 38px; /* Make the page title clear. */
+  letter-spacing: -1px; /* Tighten the large title slightly. */
+}
+
+/* Style history and inquiry records as individual cards. */
+.item-row {
+  margin: 13px 0; /* Separate one saved record from another. */
+  padding: 16px 18px; /* Add space around record information. */
+  border: 1px solid var(--line); /* Outline each record. */
+  border-radius: 10px; /* Match the rest of the interface. */
+  background: #fffefa; /* Keep saved information on a bright surface. */
+  box-shadow: 0 5px 18px #173a2b08; /* Add a subtle card effect. */
+}
+
+/* Keep paragraphs inside a saved record compact. */
+.item-row p {
+  margin: 5px 0; /* Avoid overly large paragraph spacing. */
+}
+
+/* Add room before the inquiry history heading. */
+.inquiry-heading {
+  margin-top: 30px; /* Separate the heading from the form above. */
+}
+
+/* Cover the page behind a dialog. */
+.modal {
+  position: fixed; /* Keep the dialog in place while scrolling. */
+  inset: 0; /* Cover the full viewport. */
+  z-index: 5; /* Place the dialog above the page content. */
+  display: grid; /* Make centering the dialog simple. */
+  place-items: center; /* Center the dialog horizontally and vertically. */
+  padding: 24px; /* Keep dialog away from the viewport edge. */
+  background: #10251caa; /* Dim the page behind the dialog. */
+  backdrop-filter: blur(4px); /* Add a subtle focus effect to the backdrop. */
+}
+
+/* Make the dialog readable and scrollable when its content is long. */
+.modal-box {
+  position: relative; /* Anchor the close button inside the dialog. */
+  width: min(600px, 100%); /* Keep the dialog within the viewport. */
+  max-height: 90vh; /* Leave some space above and below. */
+  overflow: auto; /* Scroll the dialog content if needed. */
+  padding: 28px; /* Give dialog content comfortable spacing. */
+  border: 1px solid #ffffffb8; /* Add a soft edge to the panel. */
+  border-radius: 16px; /* Match the rounded card style. */
+  background: #fffefa; /* Keep the dialog content bright. */
+  box-shadow: 0 24px 80px #06160f55; /* Lift the dialog above the page. */
+}
+
+/* Show the selected product photo inside its details dialog. */
+.modal-box > img {
+  width: 100%; /* Fill the dialog width. */
+  max-height: 250px; /* Keep the photo from dominating the dialog. */
+  margin-bottom: 14px; /* Separate the photo from the title. */
+  border-radius: 10px; /* Match the dialog's rounded shape. */
+  object-fit: cover; /* Fill the image frame without distortion. */
+}
+
+/* Place the close control at the dialog's upper-right corner. */
+.close {
+  position: absolute; /* Position relative to the dialog panel. */
+  top: 10px; /* Keep it near the top edge. */
+  right: 14px; /* Keep it near the right edge. */
+  width: 36px; /* Give the control a comfortable target size. */
+  height: 36px; /* Make it a square target. */
+  border: 0; /* Remove the default button border. */
+  border-radius: 50%; /* Make the close control circular. */
+  background: #edf3ec; /* Give the control a soft surface. */
+  color: var(--forest); /* Keep the icon aligned with the brand. */
+  font-size: 24px; /* Make the close symbol easy to see. */
+}
+
+/* Keep the footer understated and centered. */
+footer {
+  padding: 24px; /* Give the footer text breathing room. */
+  color: var(--muted); /* Use a quiet footer color. */
+  font-size: 13px; /* Keep footer information secondary. */
+  text-align: center; /* Center the footer text. */
+}
