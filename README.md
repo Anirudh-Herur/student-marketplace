@@ -4,7 +4,7 @@ A front-end-only RV University marketplace demo made with HTML, CSS, and plain J
 
 ## Saving data and images
 
-On each page, choose the project folder (the folder containing `index.html`). The app saves listing, purchase-history, and inquiry data in `marketplace.json`, and uploaded item photos in an `images` folder. Choose the same folder again after opening another page. Folder saving works in browsers that support the File System Access API, such as Chrome and Edge, when served from localhost. Other browsers keep data only in that browser's local storage.
+The app saves listings, purchase-history records, inquiries, wishlist items, and uploaded photos in this browser's local storage. The data is not shared with other browsers or devices, and clearing browser data may remove it. Uploaded photos also use browser storage space.
 
 ## Demo account features
 
@@ -18,3 +18,9 @@ The login page stores a name and email in this browser to separate each student'
 - Page behavior and data saving are in `src/app.js`.
 
 The data file is JSON so it can be edited in a text editor. It is not an Excel workbook.
+
+## JavaScript for beginners
+
+The app mostly uses `var`, named functions, `if` statements, `for` loops, and click or submit events. To search, filter, and sort products, see `updateListings()` and `sortListings()` in `src/app.js`.
+
+The photo preview uses the browser's `FileReader` feature. The rest of the app uses basic page elements, functions, loops, and browser storage.

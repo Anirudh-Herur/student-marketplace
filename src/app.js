@@ -1,10 +1,12 @@
 /*
+  This file uses beginner JavaScript: var, named functions, if statements, and for loops.
+  Uploaded photo previews use the browser's FileReader feature.
   QUICK CODE GUIDE FOR COMMON QUESTIONS:
   - Search, category filters, wishlist, and sorting: updateListings() and sortListings().
   - Product card click actions and popup details: connectListing() and showItemDetails().
   - New item form and photo preview: setUpSellForm(); its fields are in sell.html.
   - Login demo, purchase history, and inquiries: setUpLogin(), setUpPurchaseButton(), and setUpInquiryForm().
-  - Browser/folder saving: readBrowserData(), saveData(), and chooseDataFolder().
+  - Browser saving: readBrowserData() and saveData().
   - To add a sample product, edit a .listing card in index.html and buy.html.
   Styling and font sizes are in src/style.css; look for the matching class selector.
 */
@@ -14,7 +16,7 @@ function byId(id) { // Helper: find an HTML element by its ID.
   return document.getElementById(id); // Return the HTML element with the requested ID.
 } // End this code block.
 
-// All information that can be saved to marketplace.json.
+// All information saved in this browser.
 var data = { // Create a variable for all marketplace records.
   listings: [], // Store the student-created product listings.
   purchases: [], // Store the demo purchase-history records.
@@ -23,10 +25,10 @@ var data = { // Create a variable for all marketplace records.
   savedItems: [] // Store the IDs for items in the wishlist.
 }; // End this code block.
 
-// Make sure older or edited JSON files contain the lists used by the app.
+// Make sure older saved data contains the lists used by the app.
 function prepareData(savedData) { // Helper: check saved marketplace data and make sure its lists exist.
   if (!savedData || typeof savedData !== "object" || Array.isArray(savedData)) { // Reject missing data or a saved value that is not an object.
-    throw new Error("Marketplace data must be a JSON object."); // Stop loading because this file is not a marketplace data object.
+    throw new Error("Saved marketplace data must be an object."); // Stop loading because this saved value is not a marketplace data object.
   } // End this code block.
   if (!Array.isArray(savedData.listings)) savedData.listings = []; // Create an empty list when this field is missing from older saved data.
   if (!Array.isArray(savedData.purchases)) savedData.purchases = []; // Create an empty list when this field is missing from older saved data.
@@ -37,7 +39,6 @@ function prepareData(savedData) { // Helper: check saved marketplace data and ma
 } // End this code block.
 
 var currentUser = null; // Create a variable for the current demo student profile.
-var storageFolder = null; // Create a variable for the folder selected for saving files.
 var uploadedImage = ""; // Create a variable for the selected photo preview.
 var selectedCategory = "All items"; // Create a variable for the active category filter.
 var showingSaved = false; // Create a variable for whether the wishlist filter is active.
@@ -59,7 +60,7 @@ function formatPrice(price) { // Helper: format a price in Indian rupees.
   return "₹" + Number(price).toLocaleString("en-IN"); // Return the price with Indian digit grouping and the rupee sign.
 } // End this code block.
 
-// Read the browser's saved copy. This works when folder access is unavailable.
+// Read the browser's saved copy.
 function readBrowserData() { // Helper: load marketplace data and the demo profile from this browser.
   var savedData = localStorage.getItem("campusCartData"); // Read the marketplace JSON text saved in this browser.
   if (savedData) { // Load marketplace data only when a saved copy exists.
@@ -86,103 +87,15 @@ function showStorageMessage(message) { // Helper: display a saving message above
   if (status) status.textContent = message; // Update the message only when its page element exists.
 } // End this code block.
 
-// Save the data in this browser and, if chosen, in the selected folder.
-async function saveData() { // Helper: save the current marketplace data.
-  var browserSaved = true; // Create a variable for whether the browser save succeeded.
+// Save the data in this browser.
+function saveData() { // Helper: save the current marketplace data.
   try { // Try this operation so a browser or file error can be handled.
     localStorage.setItem("campusCartData", JSON.stringify(data)); // Save this value in browser storage.
-  } catch (error) { // Handle the failed operation and show a useful status when needed.
-    browserSaved = false; // Remember that the browser save did not work.
-    showStorageMessage("Browser storage is full or unavailable. Choose a data folder or free browser storage space."); // Show the current save or error status.
-  } // End this code block.
-
-  if (!storageFolder) { // Use browser storage when no folder was selected.
-    if (browserSaved) { // Show the success message when the browser save worked.
-      showStorageMessage("Saved in this browser. Choose the project folder to also save files beside the website."); // Show the current save or error status.
-    } // End this code block.
-    return browserSaved; // Return this value to the code that called the helper.
-  } // End this code block.
-
-  try { // Try this operation so a browser or file error can be handled.
-    var file = await storageFolder.getFileHandle("marketplace.json", { create: true }); // Open or create the marketplace JSON file in the chosen folder.
-    var writer = await file.createWritable(); // Create a variable for the file writer used to save data.
-    await writer.write(JSON.stringify(data, null, 2)); // Write the marketplace data as readable JSON.
-    await writer.close(); // Finish writing and close the file.
-    if (browserSaved) { // Show the success message when the browser save worked.
-      showStorageMessage("Saved to marketplace.json in your chosen project folder."); // Show the current save or error status.
-    } else { // Use this path when the previous condition was false.
-      showStorageMessage("Saved to the chosen folder. Browser storage is full or unavailable."); // Show the current save or error status.
-    } // End this code block.
+    showStorageMessage("Saved in this browser."); // Show the current save or error status.
     return true; // Return this value to the code that called the helper.
   } catch (error) { // Handle the failed operation and show a useful status when needed.
-    showStorageMessage(browserSaved // Show the current save or error status.
-      ? "Could not save the folder file. Your browser copy is still saved." // Explain that the browser copy is still available when folder saving fails.
-      : "Could not save in the chosen folder or browser storage."); // Explain that neither saving location could be used.
+    showStorageMessage("Could not save. Browser storage may be full or unavailable."); // Show the current save or error status.
     return false; // Return this value to the code that called the helper.
-  } // End this code block.
-} // End this code block.
-
-// Copy an uploaded photo into the images folder.
-async function saveImageFile(file, id) { // Helper: save an uploaded photo in the images folder.
-  if (!storageFolder) return uploadedImage; // Use browser storage when no folder was selected.
-
-  var imagesFolder = await storageFolder.getDirectoryHandle("images", { create: true }); // Open or create the folder for product photos.
-  var extension = file.name.split(".").pop().toLowerCase(); // Create a variable for the photo file extension.
-  var fileName = "item-" + id + "." + extension; // Create a variable for the new photo file name.
-  var imageFile = await imagesFolder.getFileHandle(fileName, { create: true }); // Open or create the image file in the images folder.
-  var writer = await imageFile.createWritable(); // Create a variable for the file writer used to save data.
-  await writer.write(file); // Write the selected image file into the images folder.
-  await writer.close(); // Finish writing and close the file.
-  return "images/" + fileName; // Return this value to the code that called the helper.
-} // End this code block.
-
-// Move photos saved in browser storage into the chosen images folder.
-async function saveOldPhotosToFolder() { // Helper: move browser-stored photos into the chosen folder.
-  for (var i = 0; i < data.listings.length; i++) { // Repeat this block once for every student-created listing.
-    var listing = data.listings[i]; // Get the current student listing so its photo can be checked.
-
-    if (listing.image && listing.image.indexOf("data:image/") === 0) { // Copy only photos stored as browser image data into the folder.
-      var response = await fetch(listing.image); // Read the browser-stored photo data.
-      var imageBlob = await response.blob(); // Create a variable for the selected photo data.
-      var imageFile = new File([imageBlob], "upload.jpg", { type: imageBlob.type }); // Wrap the saved image data in a File object so it can be written.
-      listing.image = await saveImageFile(imageFile, listing.id); // Replace temporary photo data with its folder path.
-    } // End this code block.
-  } // End this code block.
-} // End this code block.
-
-// Ask the user to select the project folder for JSON and image files.
-async function chooseDataFolder() { // Helper: let the student select a folder for marketplace files.
-  if (!window.showDirectoryPicker) { // Check whether this browser supports folder selection.
-    showStorageMessage("Folder saving needs Chrome or Edge. Browser-only saving is still available."); // Show the current save or error status.
-    return; // Stop here because this page does not need more work.
-  } // End this code block.
-
-  try { // Try this operation so a browser or file error can be handled.
-    storageFolder = await window.showDirectoryPicker({ mode: "readwrite" }); // Ask permission to use a folder selected by the student.
-
-    try { // Try this operation so a browser or file error can be handled.
-      var file = await storageFolder.getFileHandle("marketplace.json"); // Open or create the marketplace JSON file in the chosen folder.
-      var savedFile = await file.getFile(); // Create a variable for the existing marketplace data file.
-      data = prepareData(JSON.parse(await savedFile.text())); // Replace the starting data with checked data loaded from storage.
-    } catch (error) { // Handle the failed operation and show a useful status when needed.
-      if (error.name !== "NotFoundError") { // Treat errors other than a missing new file as a read failure.
-        storageFolder = null; // Clear the folder handle because its data could not be read.
-        showStorageMessage("The folder data file could not be read. The browser copy is unchanged."); // Show the current save or error status.
-        return; // Stop here because this page does not need more work.
-      } // End this code block.
-    } // End this code block.
-
-    await saveOldPhotosToFolder(); // Copy existing browser-stored photos into the selected folder.
-    await saveData(); // Save the loaded marketplace data into the selected folder.
-    renderSavedListings(); // Refresh the marketplace cards.
-    renderHistory(); // Refresh the purchase history.
-    renderInquiries(); // Refresh the inquiry list.
-    fillInquiryChoices(); // Refresh the item choices in the inquiry form.
-    showStorageMessage("Folder selected. Data is saved in marketplace.json and uploaded photos are saved in images/."); // Show the current save or error status.
-  } catch (error) { // Handle the failed operation and show a useful status when needed.
-    if (error.name !== "AbortError") { // Show an error unless the student cancelled folder selection.
-      showStorageMessage("Could not open that folder. Browser-only saving is still available."); // Show the current save or error status.
-    } // End this code block.
   } // End this code block.
 } // End this code block.
 
@@ -191,7 +104,7 @@ function connectListing(card) { // Helper: connect the wishlist and details butt
   if (card.dataset.connected === "true") return; // Leave this helper early when the condition is true.
   card.dataset.connected = "true"; // Mark the buttons as connected so they are not added twice.
 
-  card.querySelector(".save").addEventListener("click", async function () { // Run this code when the student clicks this control.
+  card.querySelector(".save").addEventListener("click", function () { // Run this code when the student clicks this control.
     var id = card.dataset.id; // Create a variable for this item unique ID.
     var savedIndex = data.savedItems.indexOf(id); // Create a variable for the product position in the wishlist.
 
@@ -203,7 +116,7 @@ function connectListing(card) { // Helper: connect the wishlist and details butt
       this.textContent = "♡"; // Show an empty heart after removing the item.
     } // End this code block.
 
-    await saveData(); // Save the updated wishlist.
+    saveData(); // Save the updated wishlist.
     updateListings(); // Reapply the active search and filters.
   }); // Finish this event handler and its listener.
 
@@ -311,7 +224,7 @@ function updateListings() { // Helper: apply filters and update the wishlist cou
   var shown = 0; // Create a variable for the number of matching cards.
 
   for (var i = 0; i < cards.length; i++) { // Repeat this block once for every product card.
-    var matchesSearch = cards[i].dataset.title.toLowerCase().includes(search); // Create a variable for whether the title matches the search.
+    var matchesSearch = cards[i].dataset.title.toLowerCase().indexOf(search) !== -1; // True when the typed words appear in the item title.
     var matchesCategory = selectedCategory === "All items" || cards[i].dataset.category === selectedCategory; // Create a variable for whether the listing matches the chosen category.
     var matchesSaved = !showingSaved || data.savedItems.indexOf(cards[i].dataset.id) !== -1; // Create a variable for whether the listing is in the wishlist.
     cards[i].hidden = !(matchesSearch && matchesCategory && matchesSaved); // Hide cards that fail any active filter.
@@ -463,7 +376,7 @@ function setUpLogin() { // Helper: connect the demo profile form.
   var form = byId("login-form"); // Create a variable for the form handled on this page.
   if (!form) return; // Skip this form setup when the current page has no matching form.
 
-  form.addEventListener("submit", async function (event) { // Run this code when the form is submitted.
+  form.addEventListener("submit", function (event) { // Run this code when the form is submitted.
     event.preventDefault(); // Stop the browser from reloading the page for this action.
     currentUser = { // Build the demo profile from the name and email fields.
       name: form.elements.name.value.trim(), // Store the student name.
@@ -479,7 +392,7 @@ function setUpLogin() { // Helper: connect the demo profile form.
     } // End this code block.
     if (existingUser === -1) data.users.push(currentUser); // Add a new profile when this email is not saved yet.
     else data.users[existingUser] = currentUser; // Update the matching profile with the latest name.
-    await saveData(); // Save the new demo profile and marketplace data.
+    saveData(); // Save the new demo profile and marketplace data.
     location.href = "index.html"; // Open the named page in the browser.
   }); // Finish this event handler and its listener.
 } // End this code block.
@@ -489,7 +402,7 @@ function setUpPurchaseButton() { // Helper: connect the demo purchase button.
   var button = byId("record-purchase"); // Create a variable for the button connected to its action.
   if (!button) return; // Skip this setup when the current page has no purchase button.
 
-  button.addEventListener("click", async function () { // Run this code when the student clicks this control.
+  button.addEventListener("click", function () { // Run this code when the student clicks this control.
     if (!currentUser) { // Ask the student to sign in before recording this action.
       location.href = "login.html"; // Open the named page in the browser.
       return; // Stop here because this page does not need more work.
@@ -502,7 +415,7 @@ function setUpPurchaseButton() { // Helper: connect the demo purchase button.
       price: card.dataset.price, // Store the product price.
       date: new Date().toLocaleDateString("en-IN") // Record the date this demo purchase was added.
     }); // Finish this event handler and its listener.
-    await saveData(); // Save the new demo purchase to browser or folder storage.
+    saveData(); // Save the new demo purchase to browser storage.
     byId("details-modal").hidden = true; // Close the item details popup after recording the purchase.
     alert("Demo purchase added to your history. No payment was made."); // Show a short confirmation message to the student.
   }); // Finish this event handler and its listener.
@@ -513,7 +426,7 @@ function setUpInquiryForm() { // Helper: connect the seller inquiry form.
   var form = byId("inquiry-form"); // Create a variable for the form handled on this page.
   if (!form) return; // Skip this form setup when the current page has no matching form.
 
-  form.addEventListener("submit", async function (event) { // Run this code when the form is submitted.
+  form.addEventListener("submit", function (event) { // Run this code when the form is submitted.
     event.preventDefault(); // Stop the browser from reloading the page for this action.
     if (!currentUser) { // Ask the student to sign in before recording this action.
       location.href = "login.html"; // Open the named page in the browser.
@@ -534,7 +447,7 @@ function setUpInquiryForm() { // Helper: connect the seller inquiry form.
       status: "Sent in demo", // Store the demo-only inquiry status.
       date: new Date().toLocaleDateString("en-IN") // Record the date this demo inquiry was added.
     }); // Finish this event handler and its listener.
-    await saveData(); // Save the inquiry so it appears in the student's inquiry list.
+    saveData(); // Save the inquiry so it appears in the student's inquiry list.
     form.reset(); // Clear the form after its information is saved.
     renderInquiries(); // Refresh the inquiry list.
   }); // Finish this event handler and its listener.
@@ -557,7 +470,7 @@ function setUpModals() { // Helper: connect buttons that open and close dialogs.
   } // End this code block.
 } // End this code block.
 
-// Post a new item and save its photo in the images folder when possible. The matching form is in sell.html.
+// Post a new item and save it in this browser. The matching form is in sell.html.
 function setUpSellForm() { // Helper: connect the photo preview and new listing form.
   var form = byId("sell-form"); // Create a variable for the form handled on this page.
   if (!form) return; // Skip this form setup when the current page has no matching form.
@@ -583,23 +496,13 @@ function setUpSellForm() { // Helper: connect the photo preview and new listing 
   }); // Finish this event handler and its listener.
 
   // This submit handler reads the sell.html fields, creates a listing, then saves it.
-  form.addEventListener("submit", async function (event) { // Run this code when the form is submitted.
+  form.addEventListener("submit", function (event) { // Run this code when the form is submitted.
     event.preventDefault(); // Stop the browser from reloading the page for this action.
     if (!form.reportValidity()) return; // Stop if the browser reports a required form field is invalid.
 
     var user = currentUser || { name: form.elements.seller.value.trim(), email: "" }; // Use the signed-in profile, or the name entered as seller.
     var id = Date.now().toString(); // Create a unique listing ID using the current time.
-    var file = form.elements.photo.files[0]; // Get the photo file selected in the sell form.
     var image = uploadedImage || "https://images.unsplash.com/photo-1497633762265-9d179a990aa6?auto=format&fit=crop&w=700&q=80"; // Use the uploaded photo, or a sample photo when none was selected.
-
-    if (file && storageFolder) { // Copy the photo into the folder when both a photo and folder are available.
-      try { // Try this operation so a browser or file error can be handled.
-        image = await saveImageFile(file, id); // Save the photo and keep its new folder path.
-      } catch (error) { // Handle the failed operation and show a useful status when needed.
-        showStorageMessage("Image could not be saved to the images folder."); // Show the current save or error status.
-        return; // Stop here because this page does not need more work.
-      } // End this code block.
-    } // End this code block.
 
     var listing = { // Create a variable for the product details being saved or shown.
       id: id, // Store the unique item ID.
@@ -609,12 +512,12 @@ function setUpSellForm() { // Helper: connect the photo preview and new listing 
       seller: user.name, // Store the seller name.
       place: form.elements.place.value.trim(), // Store the campus meetup place.
       description: form.elements.description.value.trim(), // Store the item description.
-      image: image, // Store the photo preview or saved image path.
+      image: image, // Store the photo data or sample photo URL.
       date: 0 // Give a newly posted listing the first (newest) position in the demo sort order.
     }; // End this code block.
 
     data.listings.push(listing); // Add the new listing to the marketplace data.
-    await saveData(); // Save the new listing and its photo reference.
+    saveData(); // Save the new listing and its photo in this browser.
     form.reset(); // Clear the form after its information is saved.
     uploadedImage = ""; // Keep the photo preview ready for the new listing.
     byId("photo-preview").hidden = true; // Hide the old photo preview after the form is cleared.
@@ -637,9 +540,6 @@ function startPage() { // Helper: load data and connect this page controls.
       location.href = "index.html"; // Open the named page in the browser.
     }); // Finish this event handler and its listener.
   } // End this code block.
-
-  var folderButton = byId("storage-button"); // Create a variable for the choose-folder button.
-  if (folderButton) folderButton.addEventListener("click", chooseDataFolder); // Connect folder selection only on pages that show its button.
 
   if (document.body.dataset.page === "home" || document.body.dataset.page === "buy") { // Set up browsing tools on the home and buying pages.
     renderSavedListings(); // Refresh the marketplace cards.
