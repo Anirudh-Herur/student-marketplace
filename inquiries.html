@@ -14,17 +14,20 @@
   <!-- Use the same navigation as the marketplace. -->
   <header class="site-header">
     <a class="brand" href="index.html">Campus Cart</a>
-    <nav aria-label="Main navigation"><a href="index.html">Marketplace</a><a href="history.html">Purchase history</a><a href="inquiries.html">Inquiries</a><a href="login.html" id="login-link">Log in</a></nav>
+    <!-- Each href opens that page; edit these links to change the navigation. -->
+    <nav aria-label="Main navigation"><a href="index.html">Marketplace</a><a href="buy.html">Buy</a><a href="sell.html">Sell</a><a href="history.html">Purchase history</a><a href="inquiries.html">Inquiries</a><a href="login.html" id="login-link">Log in</a></nav>
     <button class="button secondary" id="storage-button" type="button">Choose data folder</button>
   </header>
   <!-- Tell the student how to load data saved to a folder. -->
   <p class="storage-status" id="storage-status" role="status">Choose the same data folder to load saved inquiries.</p>
   <!-- Let students choose an item and save a demo message. -->
   <main class="page">
+    <!-- Change the page title here; its font size is controlled by .page h1 in src/style.css. -->
     <h1>Seller inquiries</h1>
     <p class="note">Send an in-page message to a sample seller. Messages are only saved in this demo.</p>
     <section class="panel">
       <!-- The item menu is filled from examples and posted listings. -->
+      <!-- setUpInquiryForm() in src/app.js reads the listing and message field names. -->
       <form class="form" id="inquiry-form">
         <label>Item<select name="listing" id="inquiry-listing" required></select></label>
         <label>Message<textarea name="message" required placeholder="Ask the seller about this item"></textarea></label>

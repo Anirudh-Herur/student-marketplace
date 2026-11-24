@@ -1,3 +1,12 @@
+/*
+  QUICK STYLE GUIDE:
+  Change the site-wide font in body below.
+  Change the hero title in .hero h1 and section titles in h2.
+  Change listing names in .listing-info .title and listing prices in .price.
+  Change form label and input sizes in .form label and .form input, select, textarea.
+  Font size is controlled by the font-size property in each selector.
+*/
+
 /* Keep the small color palette easy to change in one place. */
 :root {
   --forest: #174b3a; /* Main university green for buttons and links. */
@@ -16,6 +25,7 @@ body {
   margin: 0; /* Remove the browser's default outside spacing. */
   background: var(--cream); /* Use the shared warm background color. */
   color: var(--ink); /* Make normal text dark and easy to read. */
+  /* Change the preferred font here for the whole website. */
   font-family: "Segoe UI", Arial, sans-serif; /* Use fonts already on the computer. */
   line-height: 1.55; /* Give paragraphs room to breathe. */
 }
@@ -177,12 +187,12 @@ button {
   letter-spacing: 1.7px; /* Give the uppercase label an editorial feel. */
 }
 
-/* Set a strong headline with compact spacing. */
+/* Set a strong headline with compact spacing. Change font-size here to resize the home page title. */
 .hero h1 {
   margin: 0; /* Remove default heading spacing. */
   color: var(--forest); /* Use the brand green for the headline. */
   font-family: Georgia, "Times New Roman", serif; /* Add a classic editorial contrast. */
-  font-size: clamp(36px, 5vw, 58px); /* Keep the headline bold but let it fit the column. */
+  font-size: clamp(36px, 5vw, 58px); /* Change these values to resize the home page headline. */
   font-weight: 700; /* Keep the headline bold. */
   letter-spacing: -2px; /* Tighten the large headline lettering. */
   line-height: 1.04; /* Keep its two lines close together. */
@@ -232,10 +242,63 @@ h1, h2, h3 {
   letter-spacing: -0.45px; /* Slightly tighten heading text. */
 }
 
-/* Set a clean size for section headings. */
+/* Set a clean size for section headings. Change font-size here to resize section titles site-wide. */
 h2 {
   margin: 0; /* Remove browser heading margins. */
   font-size: 26px; /* Separate section titles from body text. */
+}
+
+/* Stack the buying and selling cards with the spacing from the reference. */
+.marketplace-options {
+  display: grid; /* Put each choice on its own row. */
+  gap: 20px; /* Separate the two choice cards. */
+  margin: 42px auto; /* Give the cards breathing room above and below. */
+  max-width: 960px; /* Keep text from stretching too wide. */
+  padding: 0 5%; /* Keep the cards inside the page edges. */
+}
+
+/* Give each audience choice a soft, rounded background. */
+.option-card {
+  padding: 34px 38px; /* Add generous space around the card text. */
+  border: 1px solid #d5e4d7; /* Use the same soft green border as the page callout. */
+  border-radius: 16px; /* Round the card corners like the reference. */
+  background: #eef4ee; /* Match the pale green used by other page controls. */
+}
+
+/* Emphasize the audience card heading. */
+.option-card h2 {
+  margin-bottom: 12px; /* Separate the heading from its description. */
+  color: var(--forest); /* Match the marketplace's green headings and buttons. */
+  font-size: 26px; /* Change this value to resize the buying and selling card headings. */
+}
+
+/* Keep the card description readable and secondary. */
+.option-card p {
+  max-width: 680px; /* Keep long descriptions at a comfortable width. */
+  margin: 0 0 16px; /* Leave room before the action link. */
+  color: #52675a; /* Match the muted text color used throughout the page. */
+  font-size: 17px; /* Make the short explanation easy to read. */
+}
+
+/* Style both card actions as clear text links. */
+.option-link {
+  display: inline-flex; /* Keep the action label and arrow together. */
+  align-items: center; /* Align the arrow with its label. */
+  gap: 7px; /* Separate the arrow slightly from the text. */
+  padding: 0; /* Keep the action link free of button-like padding. */
+  border: 0; /* Remove the browser button border. */
+  background: transparent; /* Let the card background show through. */
+  color: var(--forest); /* Match the marketplace's green action buttons. */
+  font-size: 16px; /* Change this value to resize the buying/selling card links. */
+  font-weight: 750; /* Emphasize the next step. */
+  text-decoration: none; /* Keep links clean until hovered. */
+}
+
+/* Make the card actions respond clearly to hover. */
+.option-link:hover {
+  color: var(--forest); /* Use the marketplace brand color on hover. */
+  text-decoration: underline; /* Make the action's interactivity clear. */
+  text-underline-offset: 4px; /* Keep the underline below the text. */
 }
 
 /* Arrange category and sort controls with even spacing. */
@@ -322,7 +385,7 @@ h2 {
   border: 0; /* Avoid a visible button frame. */
   background: none; /* Blend the button with the card. */
   color: var(--ink); /* Keep the title readable. */
-  font-size: 15px; /* Make item names easy to scan. */
+  font-size: 15px; /* Change this value to resize product names on cards. */
   font-weight: 750; /* Emphasize the item name. */
   line-height: 1.35; /* Keep multi-line titles compact. */
   text-align: left; /* Align the title with the rest of the card. */
@@ -337,7 +400,7 @@ h2 {
 .price {
   margin: 10px 0 5px; /* Keep the price close to the title. */
   color: var(--forest); /* Keep price readable and aligned with brand. */
-  font-size: 20px; /* Make the price easy to find. */
+  font-size: 20px; /* Change this value to resize product prices. */
   font-weight: 800; /* Give the amount enough emphasis. */
 }
 

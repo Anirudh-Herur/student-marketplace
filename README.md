@@ -1,6 +1,6 @@
 # Campus Cart
 
-A front-end-only RV University marketplace demo made with HTML, CSS, and plain JavaScript. It does not use React, Bootstrap, or other frameworks. Open `index.html`, `login.html`, `history.html`, and `inquiries.html` from a local web server such as VS Code Live Server.
+A front-end-only RV University marketplace demo made with HTML, CSS, and plain JavaScript. It does not use React, Bootstrap, or other frameworks. Open `index.html`, `buy.html`, `sell.html`, `login.html`, `history.html`, and `inquiries.html` from a local web server such as VS Code Live Server.
 
 ## Saving data and images
 
@@ -12,8 +12,8 @@ The login page stores a name and email in this browser to separate each student'
 
 ## Changing the site
 
-- Sample item cards are in `index.html`. The matching item names are listed in `sampleTitles` in `src/app.js` for the inquiry dropdown.
-- Main page content and form fields are in `index.html`; the other pages are `login.html`, `history.html`, and `inquiries.html`.
+- Sample item cards are in `index.html` and `buy.html`. The matching item names are listed in `sampleTitles` in `src/app.js` for the inquiry dropdown.
+- The home page is `index.html`; buying and selling have their own pages in `buy.html` and `sell.html`. The other pages are `login.html`, `history.html`, and `inquiries.html`.
 - Shared colors and layouts are in `src/style.css`.
 - Page behavior and data saving are in `src/app.js`.
 

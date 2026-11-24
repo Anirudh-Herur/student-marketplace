@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <!-- Set the page encoding and screen size for the browser. -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Give this page a useful browser-tab title. -->
+  <title>Sell an item | Campus Cart</title>
+  <!-- Load the shared page styling. -->
+  <link href="src/style.css" rel="stylesheet">
+</head>
+<!-- Tell shared JavaScript that this page contains the selling form. -->
+<body data-page="sell">
+  <!-- Link the separate buying and selling pages from the navigation. -->
+  <header class="site-header">
+    <a class="brand" href="index.html">Campus Cart</a>
+    <!-- Each href opens that page; edit these links to change the navigation. -->
+    <nav aria-label="Main navigation">
+      <a href="index.html">Marketplace</a>
+      <a href="buy.html">Buy</a>
+      <a href="sell.html">Sell</a>
+      <a href="history.html">Purchase history</a>
+      <a href="inquiries.html">Inquiries</a>
+      <a href="login.html" id="login-link">Log in</a>
+    </nav>
+    <div class="header-actions">
+      <button class="button secondary" id="storage-button" type="button">Choose data folder</button>
+      <a class="button" href="buy.html">Browse items</a>
+    </div>
+  </header>
+  <!-- JavaScript reports when the listing is saved. -->
+  <p class="storage-status" id="storage-status" role="status">Add item details and post your listing for other students.</p>
+
+  <!-- Collect the product details and optional photo for a new listing. -->
+  <main class="page">
+    <p class="eyebrow">PASS IT ON TO ANOTHER STUDENT</p>
+    <!-- Change this heading text here; change its font size in the .page h1 rule in src/style.css. -->
+    <h1>Sell an item</h1>
+    <p>Share a used textbook, calculator, or lab supply with the RV University community.</p>
+    <section class="panel">
+      <!-- The name attributes are read in src/app.js; keep them when changing these fields. -->
+      <form class="form" id="sell-form">
+        <!-- Change this label or input to change the listing title field. -->
+        <label>Item name<input name="title" required></label>
+        <!-- The number input accepts only prices above zero. -->
+        <label>Price in rupees<input name="price" type="number" min="1" required></label>
+        <!-- Keep these category choices consistent with the filters on buy.html. -->
+        <label>Category<select name="category"><option>Textbooks</option><option>Calculators</option><option>Lab equipment</option></select></label>
+        <!-- Seller name and meetup location appear on the product card. -->
+        <label>Your name<input name="seller" required></label>
+        <label>Campus meetup spot<input name="place" required></label>
+        <!-- Add or change the item's written description in this field. -->
+        <label>Item details<textarea name="description" required></textarea></label>
+        <!-- accept limits the file picker to images; the preview and size check are in src/app.js. -->
+        <label>Item photo<input name="photo" type="file" accept="image/*"></label>
+        <!-- JavaScript shows the chosen photo here before the form is submitted. -->
+        <img id="photo-preview" class="preview" alt="Selected item preview" hidden>
+        <p class="note">Photo upload is optional. Your listing is saved in this browser unless you choose a data folder.</p>
+        <button class="button" type="submit">Post listing</button>
+      </form>
+    </section>
+  </main>
+  <footer>Campus Cart · RV University · Front-end demo only.</footer>
+  <script src="src/app.js"></script>
+</body>
+</html>

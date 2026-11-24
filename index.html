@@ -16,14 +16,16 @@
     <a class="brand" href="index.html">Campus Cart</a>
     <nav aria-label="Main navigation">
       <a href="index.html">Marketplace</a>
+      <a href="buy.html">Buy</a>
+      <a href="sell.html">Sell</a>
       <a href="history.html">Purchase history</a>
       <a href="inquiries.html">Inquiries</a>
       <a href="login.html" id="login-link">Log in</a>
     </nav>
-    <!-- These buttons open folder saving and the sell form. -->
+    <!-- These buttons open folder saving and the selling page. -->
     <div class="header-actions">
       <button class="button secondary" id="storage-button" type="button">Choose data folder</button>
-      <button class="button" id="open-sell" type="button">Sell an item</button>
+      <a class="button" href="sell.html">Sell an item</a>
     </div>
   </header>
   <!-- JavaScript updates this accessible message after saving. -->
@@ -37,18 +39,33 @@
       <p>Buy and sell affordable course books and supplies with other students.</p>
       <!-- Typing here filters product titles without reloading the page. -->
       <form class="search" id="search-form">
+        <!-- Change the placeholder text here; the input ID connects it to search in src/app.js. -->
         <input id="search-input" type="search" placeholder="Search items" aria-label="Search course items">
         <button class="button" type="submit">Search</button>
       </form>
     </div>
+    <!-- Replace this image URL to use a different campus photo. -->
     <img src="https://images.unsplash.com/photo-1523580494863-6f3031224c94?auto=format&fit=crop&w=900&q=85" alt="Students at a university">
   </section>
 
-  <!-- Main content holds category filters, listings, and the sell invitation. -->
+  <!-- Main content links to buying and selling, category filters, product cards, and the sell banner. -->
   <main>
+    <!-- Help students choose whether they want to buy or sell. -->
+    <section class="marketplace-options" aria-label="Buying and selling">
+      <article class="option-card">
+        <h2>For students buying</h2>
+        <p>Find affordable textbooks, calculators, and lab equipment from other RV University students.</p>
+        <a class="option-link" href="buy.html">Explore items <span aria-hidden="true">→</span></a>
+      </article>
+      <article class="option-card">
+        <h2>For students selling</h2>
+        <p>Give your used course supplies a new home and earn money back for your next semester.</p>
+        <a class="option-link" href="sell.html">List an item <span aria-hidden="true">→</span></a>
+      </article>
+    </section>
+    <!-- These buttons filter listings; data-category values must match listing categories below. -->
     <section>
       <h2>Browse categories</h2>
-      <!-- Each data-category value is used by JavaScript as a filter. -->
       <div class="category-buttons">
         <button class="active" data-category="All items">All items</button>
         <button data-category="Textbooks">Textbooks</button>
@@ -57,6 +74,7 @@
         <button id="saved-button" type="button">Saved <span id="saved-count">0</span></button>
       </div>
     </section>
+    <!-- The listing cards and sorting control are in this section. -->
     <section id="listings">
       <h2>Items for your courses</h2>
       <!-- This menu changes the order of the product cards. -->
@@ -68,9 +86,9 @@
         </select>
       </div>
 
-      <!-- Edit these sample cards to change the course items. Each data-* value is used by search, filters, and details. -->
+      <!-- To change a product, edit its data-* values and visible title, price, seller, and image together. -->
       <div class="listing-grid" id="listing-grid">
-        <!-- Sample listing: change the values here to edit this item. -->
+        <!-- Sample listing 1: change the data-* values and matching visible content to edit this item. -->
         <article class="listing"
           data-title="Electrical and Electronics Lab Kit"
           data-category="Lab equipment"
@@ -89,7 +107,7 @@
             <p class="seller">Srikar · RVU Science Block</p>
           </div>
         </article>
-        <!-- Sample listing: change the values here to edit this item. -->
+        <!-- Sample listing 2: change the data-* values and matching visible content to edit this item. -->
         <article class="listing"
           data-title="Constitution of India course reader"
           data-category="Textbooks"
@@ -107,7 +125,7 @@
             <p class="seller">Sahil · RVU Library</p>
           </div>
         </article>
-        <!-- Sample listing: change the values here to edit this item. -->
+        <!-- Sample listing 3: change the data-* values and matching visible content to edit this item. -->
         <article class="listing"
           data-title="Discrete Mathematics textbook"
           data-category="Textbooks"
@@ -125,7 +143,7 @@
             <p class="seller">Naman · RVU Academic Block A</p>
           </div>
         </article>
-        <!-- Sample listing: change the values here to edit this item. -->
+        <!-- Sample listing 4: change the data-* values and matching visible content to edit this item. -->
         <article class="listing"
           data-title="Scientific calculator"
           data-category="Calculators"
@@ -143,7 +161,7 @@
             <p class="seller">Anirudh · RVU Student Centre</p>
           </div>
         </article>
-        <!-- Sample listing: change the values here to edit this item. -->
+        <!-- Sample listing 5: change the data-* values and matching visible content to edit this item. -->
         <article class="listing"
           data-title="English Communication workbook"
           data-category="Textbooks"
@@ -161,7 +179,7 @@
             <p class="seller">Priya · RVU Library</p>
           </div>
         </article>
-        <!-- Sample listing: change the values here to edit this item. -->
+        <!-- Sample listing 6: change the data-* values and matching visible content to edit this item. -->
         <article class="listing"
           data-title="Exploring Science experiment kit"
           data-category="Lab equipment"
@@ -179,7 +197,7 @@
             <p class="seller">Aarav · RVU Science Block</p>
           </div>
         </article>
-        <!-- Sample listing: change the values here to edit this item. -->
+        <!-- Sample listing 7: change the data-* values and matching visible content to edit this item. -->
         <article class="listing"
           data-title="Programming in C textbook"
           data-category="Textbooks"
@@ -197,7 +215,7 @@
             <p class="seller">Naman · RVU Academic Block A</p>
           </div>
         </article>
-        <!-- Sample listing: change the values here to edit this item. -->
+        <!-- Sample listing 8: change the data-* values and matching visible content to edit this item. -->
         <article class="listing"
           data-title="Web Technology guide"
           data-category="Textbooks"
@@ -215,7 +233,7 @@
             <p class="seller">Sahil · RVU Library</p>
           </div>
         </article>
-        <!-- Sample listing: change the values here to edit this item. -->
+        <!-- Sample listing 9: change the data-* values and matching visible content to edit this item. -->
         <article class="listing"
           data-title="Design Thinking workbook"
           data-category="Textbooks"
@@ -237,46 +255,30 @@
       <!-- JavaScript shows this when all filters return zero cards. -->
       <p id="empty-message" hidden>No items found. Try a different search or category.</p>
     </section>
-    <!-- Encourage students to open the listing form. -->
+    <!-- Encourage students to open the selling page. -->
     <section class="banner">
       <h2>Have something to sell?</h2>
       <p>Pass on your course books and supplies to another RV University student.</p>
-      <button class="button" id="open-sell-bottom" type="button">List an item</button>
+      <a class="button" href="sell.html">List an item</a>
     </section>
   </main>
 
   <!-- This dialog displays an item and demo-only purchase/inquiry actions. -->
   <div class="modal" id="details-modal" hidden>
     <section class="modal-box">
+      <!-- This button closes the details popup; its data-close value names the popup ID. -->
       <button class="close" data-close="details-modal" type="button">×</button>
+      <!-- JavaScript fills these fields from the selected product card. -->
       <img id="detail-image" alt="">
       <h2 id="detail-title"></h2><p id="detail-price" class="price"></p>
       <p id="detail-description"></p><p id="detail-seller" class="seller"></p>
+      <!-- These buttons record a demo purchase or open the inquiry page for this item. -->
       <button class="button" id="record-purchase" type="button">Record as purchased</button>
       <a class="button secondary" id="ask-about-item" href="inquiries.html">Send an inquiry</a>
       <p class="note">Demo only: this does not process a payment or confirm a real purchase.</p>
     </section>
   </div>
 
-  <!-- This dialog collects information for a new student listing. -->
-  <div class="modal" id="sell-modal" hidden>
-    <section class="modal-box">
-      <button class="close" data-close="sell-modal" type="button">×</button>
-      <h2>List an item</h2>
-      <form class="form" id="sell-form">
-        <label>Item name<input name="title" required></label>
-        <label>Price in rupees<input name="price" type="number" min="1" required></label>
-        <label>Category<select name="category"><option>Textbooks</option><option>Calculators</option><option>Lab equipment</option></select></label>
-        <label>Your name<input name="seller" required></label>
-        <label>Campus meetup spot<input name="place" required></label>
-        <label>Item details<textarea name="description" required></textarea></label>
-        <!-- The selected photo is previewed here before posting the listing. -->
-        <label>Item photo<input name="photo" type="file" accept="image/*"></label>
-        <img id="photo-preview" class="preview" alt="Selected item preview" hidden>
-        <button class="button" type="submit">Post listing</button>
-      </form>
-    </section>
-  </div>
   <footer>Campus Cart · RV University · Demo listings reset only when you clear the saved data.</footer>
   <!-- Load shared page behavior after the HTML controls are ready. -->
   <script src="src/app.js"></script>

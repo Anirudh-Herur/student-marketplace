@@ -1,3 +1,14 @@
+/*
+  QUICK CODE GUIDE FOR COMMON QUESTIONS:
+  - Search, category filters, wishlist, and sorting: updateListings() and sortListings().
+  - Product card click actions and popup details: connectListing() and showItemDetails().
+  - New item form and photo preview: setUpSellForm(); its fields are in sell.html.
+  - Login demo, purchase history, and inquiries: setUpLogin(), setUpPurchaseButton(), and setUpInquiryForm().
+  - Browser/folder saving: readBrowserData(), saveData(), and chooseDataFolder().
+  - To add a sample product, edit a .listing card in index.html and buy.html.
+  Styling and font sizes are in src/style.css; look for the matching class selector.
+*/
+
 // Find an element by its ID.
 function byId(id) { // Helper: find an HTML element by its ID.
   return document.getElementById(id); // Return the HTML element with the requested ID.
@@ -128,7 +139,7 @@ async function saveImageFile(file, id) { // Helper: save an uploaded photo in th
 // Move photos saved in browser storage into the chosen images folder.
 async function saveOldPhotosToFolder() { // Helper: move browser-stored photos into the chosen folder.
   for (var i = 0; i < data.listings.length; i++) { // Repeat this block once for every student-created listing.
-    var listing = data.listings[i]; // Create a variable for the product details being saved or shown.
+    var listing = data.listings[i]; // Get the current student listing so its photo can be checked.
 
     if (listing.image && listing.image.indexOf("data:image/") === 0) { // Copy only photos stored as browser image data into the folder.
       var response = await fetch(listing.image); // Read the browser-stored photo data.
@@ -192,7 +203,7 @@ function connectListing(card) { // Helper: connect the wishlist and details butt
       this.textContent = "♡"; // Show an empty heart after removing the item.
     } // End this code block.
 
-    await saveData(); // Wait for the browser to finish this file or saving operation.
+    await saveData(); // Save the updated wishlist.
     updateListings(); // Reapply the active search and filters.
   }); // Finish this event handler and its listener.
 
@@ -211,7 +222,7 @@ function showItemDetails(card) { // Helper: open the details dialog for one prod
   byId("detail-seller").textContent = card.dataset.seller + " · " + card.dataset.place; // Set the text shown to the student.
   byId("record-purchase").dataset.itemId = card.dataset.id; // Remember which item the purchase button refers to.
   byId("ask-about-item").href = "inquiries.html?item=" + encodeURIComponent(card.dataset.id); // Link the inquiry button to this selected item.
-  byId("details-modal").hidden = false; // Show or hide this page element.
+  byId("details-modal").hidden = false; // Display the details popup.
 } // End this code block.
 
 // Make a new listing card from the information in the JSON file.
@@ -293,7 +304,7 @@ function renderSavedListings() { // Helper: show sample and student-created list
   fillInquiryChoices(); // Refresh the item choices in the inquiry form.
 } // End this code block.
 
-// Search, category buttons, and saved items share these filters.
+// Search, category buttons, and saved items share these filters. Change the matching controls in index.html or buy.html.
 function updateListings() { // Helper: apply filters and update the wishlist count.
   var cards = document.querySelectorAll(".listing"); // Find every page element needed for the product cards on the page.
   var search = byId("search-input").value.toLowerCase(); // Create a variable for the lowercase search words.
@@ -303,7 +314,7 @@ function updateListings() { // Helper: apply filters and update the wishlist cou
     var matchesSearch = cards[i].dataset.title.toLowerCase().includes(search); // Create a variable for whether the title matches the search.
     var matchesCategory = selectedCategory === "All items" || cards[i].dataset.category === selectedCategory; // Create a variable for whether the listing matches the chosen category.
     var matchesSaved = !showingSaved || data.savedItems.indexOf(cards[i].dataset.id) !== -1; // Create a variable for whether the listing is in the wishlist.
-    cards[i].hidden = !(matchesSearch && matchesCategory && matchesSaved); // Show or hide this page element.
+    cards[i].hidden = !(matchesSearch && matchesCategory && matchesSaved); // Hide cards that fail any active filter.
     if (!cards[i].hidden) shown++; // Count this card when it is visible after filtering.
   } // End this code block.
 
@@ -314,7 +325,7 @@ function updateListings() { // Helper: apply filters and update the wishlist cou
   if (savedCount) savedCount.textContent = data.savedItems.length; // Update the wishlist count when its element exists.
 } // End this code block.
 
-// Sort the visible cards by price or date.
+// Sort the cards using the selected option in index.html or buy.html.
 function sortListings() { // Helper: order product cards by date or price.
   var cards = document.querySelectorAll(".listing"); // Find every page element needed for the product cards on the page.
   var list = []; // Make a temporary list that can be reordered.
@@ -391,7 +402,7 @@ function renderHistory() { // Helper: show demo purchases for the current profil
     count++; // Add one to the number of matching records.
   } // End this code block.
 
-  byId("history-empty").hidden = count > 0; // Show or hide this page element.
+  byId("history-empty").hidden = count > 0; // Hide the empty message when at least one purchase is shown.
 } // End this code block.
 
 // Add marketplace items to the inquiry form's dropdown.
@@ -437,7 +448,7 @@ function renderInquiries() { // Helper: show messages for the current profile.
     list.appendChild(row); // Add this new element inside its parent on the page.
     count++; // Add one to the number of matching records.
   } // End this code block.
-  byId("inquiry-empty").hidden = count > 0; // Show or hide this page element.
+  byId("inquiry-empty").hidden = count > 0; // Hide the empty message when at least one inquiry is shown.
 } // End this code block.
 
 // Escape text before displaying it inside inquiry markup.
@@ -468,7 +479,7 @@ function setUpLogin() { // Helper: connect the demo profile form.
     } // End this code block.
     if (existingUser === -1) data.users.push(currentUser); // Add a new profile when this email is not saved yet.
     else data.users[existingUser] = currentUser; // Update the matching profile with the latest name.
-    await saveData(); // Wait for the browser to finish this file or saving operation.
+    await saveData(); // Save the new demo profile and marketplace data.
     location.href = "index.html"; // Open the named page in the browser.
   }); // Finish this event handler and its listener.
 } // End this code block.
@@ -491,8 +502,8 @@ function setUpPurchaseButton() { // Helper: connect the demo purchase button.
       price: card.dataset.price, // Store the product price.
       date: new Date().toLocaleDateString("en-IN") // Record the date this demo purchase was added.
     }); // Finish this event handler and its listener.
-    await saveData(); // Wait for the browser to finish this file or saving operation.
-    byId("details-modal").hidden = true; // Show or hide this page element.
+    await saveData(); // Save the new demo purchase to browser or folder storage.
+    byId("details-modal").hidden = true; // Close the item details popup after recording the purchase.
     alert("Demo purchase added to your history. No payment was made."); // Show a short confirmation message to the student.
   }); // Finish this event handler and its listener.
 } // End this code block.
@@ -510,7 +521,7 @@ function setUpInquiryForm() { // Helper: connect the seller inquiry form.
     } // End this code block.
 
     var itemId = form.elements.listing.value; // Create a variable for the selected item ID.
-    var listing = findListing(itemId); // Create a variable for the product details being saved or shown.
+    var listing = findListing(itemId); // Get the listing selected in the inquiry dropdown.
     if (!listing) { // Stop or show a message when the required value is missing.
       showStorageMessage("That item could not be found. Choose an item from the list."); // Show the current save or error status.
       return; // Stop here because this page does not need more work.
@@ -523,42 +534,36 @@ function setUpInquiryForm() { // Helper: connect the seller inquiry form.
       status: "Sent in demo", // Store the demo-only inquiry status.
       date: new Date().toLocaleDateString("en-IN") // Record the date this demo inquiry was added.
     }); // Finish this event handler and its listener.
-    await saveData(); // Wait for the browser to finish this file or saving operation.
+    await saveData(); // Save the inquiry so it appears in the student's inquiry list.
     form.reset(); // Clear the form after its information is saved.
     renderInquiries(); // Refresh the inquiry list.
   }); // Finish this event handler and its listener.
 } // End this code block.
 
-// Connect the buttons that open and close the two pop-up windows.
+// Connect the buttons that open and close the item-details window.
 function setUpModals() { // Helper: connect buttons that open and close dialogs.
-  var sellButtons = document.querySelectorAll("#open-sell, #open-sell-bottom"); // Find every page element needed for the buttons that open the listing form.
-  for (var i = 0; i < sellButtons.length; i++) { // Repeat this block once for every sell button.
-    sellButtons[i].addEventListener("click", function () { // Run this code when the student clicks this control.
-      byId("sell-modal").hidden = false; // Show or hide this page element.
-    }); // Finish this event handler and its listener.
-  } // End this code block.
-
   var closeButtons = document.querySelectorAll("[data-close]"); // Find every page element needed for the dialog close buttons.
-  for (var j = 0; j < closeButtons.length; j++) { // Repeat this block once for every close button.
-    closeButtons[j].addEventListener("click", function () { // Run this code when the student clicks this control.
-      byId(this.dataset.close).hidden = true; // Show or hide this page element.
+  for (var i = 0; i < closeButtons.length; i++) { // Repeat this block once for every close button.
+    closeButtons[i].addEventListener("click", function () { // Run this code when the student clicks this control.
+      byId(this.dataset.close).hidden = true; // Hide the popup whose ID is stored on this close button.
     }); // Finish this event handler and its listener.
   } // End this code block.
 
   var modals = document.querySelectorAll(".modal"); // Find every page element needed for the dialogs on this page.
-  for (var k = 0; k < modals.length; k++) { // Repeat this block once for every dialog.
-    modals[k].addEventListener("click", function (event) { // Run this code when the student clicks this control.
+  for (var j = 0; j < modals.length; j++) { // Repeat this block once for every dialog.
+    modals[j].addEventListener("click", function (event) { // Run this code when the student clicks this control.
       if (event.target === this) this.hidden = true; // Close the dialog only when its background is clicked.
     }); // Finish this event handler and its listener.
   } // End this code block.
 } // End this code block.
 
-// Post a new item and save its photo in the images folder when possible.
+// Post a new item and save its photo in the images folder when possible. The matching form is in sell.html.
 function setUpSellForm() { // Helper: connect the photo preview and new listing form.
   var form = byId("sell-form"); // Create a variable for the form handled on this page.
   if (!form) return; // Skip this form setup when the current page has no matching form.
 
-  form.elements.photo.addEventListener("change", function () { // React when the selected photo or option changes.
+  // The "photo" name here must match name="photo" on the file input in sell.html.
+  form.elements.photo.addEventListener("change", function () { // Preview the photo whenever a different file is selected.
     var file = this.files[0]; // Get the photo file selected in the sell form.
     if (!file) return; // Stop when the student has not selected a photo.
 
@@ -572,11 +577,12 @@ function setUpSellForm() { // Helper: connect the photo preview and new listing 
     reader.onload = function () { // Run this function after the browser finishes reading the photo.
       uploadedImage = reader.result; // Keep the photo data ready for the new listing.
       byId("photo-preview").src = uploadedImage; // Set the image URL that the browser should show.
-      byId("photo-preview").hidden = false; // Show or hide this page element.
+      byId("photo-preview").hidden = false; // Reveal the photo preview after it loads.
     }; // End this code block.
     reader.readAsDataURL(file); // Read the selected photo so it can be previewed.
   }); // Finish this event handler and its listener.
 
+  // This submit handler reads the sell.html fields, creates a listing, then saves it.
   form.addEventListener("submit", async function (event) { // Run this code when the form is submitted.
     event.preventDefault(); // Stop the browser from reloading the page for this action.
     if (!form.reportValidity()) return; // Stop if the browser reports a required form field is invalid.
@@ -604,20 +610,20 @@ function setUpSellForm() { // Helper: connect the photo preview and new listing 
       place: form.elements.place.value.trim(), // Store the campus meetup place.
       description: form.elements.description.value.trim(), // Store the item description.
       image: image, // Store the photo preview or saved image path.
-      date: 0 // Store the listing date or sort order.
+      date: 0 // Give a newly posted listing the first (newest) position in the demo sort order.
     }; // End this code block.
 
     data.listings.push(listing); // Add the new listing to the marketplace data.
-    await saveData(); // Wait for the browser to finish this file or saving operation.
+    await saveData(); // Save the new listing and its photo reference.
     form.reset(); // Clear the form after its information is saved.
     uploadedImage = ""; // Keep the photo preview ready for the new listing.
-    byId("photo-preview").hidden = true; // Show or hide this page element.
-    byId("sell-modal").hidden = true; // Show or hide this page element.
+    byId("photo-preview").hidden = true; // Hide the old photo preview after the form is cleared.
+    showStorageMessage("Your listing is posted. Browse it on the buying page."); // Confirm the listing and point the seller to the buying page.
     renderSavedListings(); // Refresh the marketplace cards.
   }); // Finish this event handler and its listener.
 } // End this code block.
 
-// Let each page use the same JavaScript file.
+// Let each page use the same JavaScript file; data-page on each HTML body selects page-specific setup.
 function startPage() { // Helper: load data and connect this page controls.
   readBrowserData(); // Load this browser saved demo data.
 
@@ -635,15 +641,16 @@ function startPage() { // Helper: load data and connect this page controls.
   var folderButton = byId("storage-button"); // Create a variable for the choose-folder button.
   if (folderButton) folderButton.addEventListener("click", chooseDataFolder); // Connect folder selection only on pages that show its button.
 
-  if (document.body.dataset.page === "home") { // Run marketplace-only setup on the home page.
+  if (document.body.dataset.page === "home" || document.body.dataset.page === "buy") { // Set up browsing tools on the home and buying pages.
     renderSavedListings(); // Refresh the marketplace cards.
     byId("search-input").addEventListener("input", updateListings); // Update the results whenever the student types.
     byId("search-form").addEventListener("submit", function (event) { // Run this code when the form is submitted.
       event.preventDefault(); // Stop the browser from reloading the page for this action.
       updateListings(); // Reapply the active search and filters.
     }); // Finish this event handler and its listener.
-    byId("sort").addEventListener("change", sortListings); // React when the selected photo or option changes.
-    byId("saved-button").addEventListener("click", function () { // Run this code when the student clicks this control.
+    byId("sort").addEventListener("change", sortListings); // Sort the cards whenever the student changes this menu.
+    var savedButton = byId("saved-button"); // Find the wishlist filter when this page includes it.
+    if (savedButton) savedButton.addEventListener("click", function () { // Connect wishlist filtering only on pages that show it.
       showingSaved = !showingSaved; // Turn the wishlist-only filter on or off.
       updateListings(); // Reapply the active search and filters.
     }); // Finish this event handler and its listener.
